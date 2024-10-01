@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 
 class Box extends StatelessWidget {
   final Widget child;
+  final EdgeInsetsGeometry? margin;
   const Box({
     super.key,
     required this.child,
+    this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),

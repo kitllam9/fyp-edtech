@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,22 +14,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('bruh'),
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Box(
-              child: Text('data'),
-            ),
-            Box(
-              child: Text('data'),
-            ),
-          ],
+    return MasonryGridView.builder(
+      itemCount: 10,
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      itemBuilder: (context, index) => Box(
+        margin: EdgeInsets.all(5),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.42,
+          height: Random().nextInt(250) + 100,
         ),
       ),
     );

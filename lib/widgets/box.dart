@@ -19,10 +19,10 @@ class Box extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withOpacity(0.2),
             spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 3), // changes position of shadow
+            blurRadius: 2.5,
+            offset: Offset(0, 2),
           ),
         ],
       ),

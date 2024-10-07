@@ -36,9 +36,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_staggered_grid_view: ^0.7.0
-  expandable_page_view: ^1.0.17
   flutter_dotenv: ^5.1.0
   material_symbols_icons: ^4.2785.1
+  requests: ^4.7.0
+  get_it: ^8.0.0
+  connectivity_plus: ^6.0.5
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) => Box(
         margin: EdgeInsets.all(5),
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.42,
+          width: Globals.screenWidth! * 0.42,
           height: Random().nextInt(250) + 100,
         ),
       ),

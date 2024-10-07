@@ -37,12 +37,12 @@ class _AchievementPageState extends State<AchievementPage> {
                   Text(
                     'Name',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       color: AppColors.text,
                     ),
                   ),
                   SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
                   Text(
                     'Description',

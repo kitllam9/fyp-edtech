@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/config/routes.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +19,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: Color.fromARGB(255, 248, 248, 248),
+        textTheme: GoogleFonts.notoSansTextTheme(),
       ),
+      routes: routes,
     );
   }
 }

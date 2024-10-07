@@ -25,12 +25,20 @@ class _StatsPageState extends State<StatsPage> {
             unselectedLabelColor: AppColors.unselected,
             splashFactory: NoSplash.splashFactory,
             overlayColor: WidgetStatePropertyAll(Colors.transparent),
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorPadding: EdgeInsets.symmetric(horizontal: 5),
             tabs: [
               Tab(
-                text: 'Leaderboard',
+                child: Text(
+                  'Leaderboard',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
               Tab(
-                text: 'Stats',
+                child: Text(
+                  'Stats',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             ],
           ),

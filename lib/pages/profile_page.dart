@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/widgets/box.dart';
+import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -112,14 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               children: [
                 for (var item in menuItems!.entries) ...[
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: EdgeInsets.zero,
-                      splashFactory: NoSplash.splashFactory,
-                      overlayColor: Colors.transparent,
-                    ),
+                  GenericButton(
                     onPressed: item.value['onPressed'],
                     child: Column(
                       children: [

@@ -23,6 +23,26 @@ class _HomePageState extends State<HomePage> {
         child: SizedBox(
           width: Globals.screenWidth! * 0.42,
           height: Random().nextInt(250) + 100,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  index.isEven ? 'Exercise' : 'Article',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Description',
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

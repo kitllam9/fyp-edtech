@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/styles/app_colors.dart';
 
 class Box extends StatelessWidget {
   final Widget child;
@@ -16,7 +17,7 @@ class Box extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
+        color: AppColors.secondary,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),

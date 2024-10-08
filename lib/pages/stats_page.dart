@@ -52,8 +52,41 @@ class _StatsPageState extends State<StatsPage> {
                   itemCount: 20,
                   itemBuilder: (context, index) => Box(
                     margin: EdgeInsets.all(5),
-                    child: SizedBox(
-                      height: 100,
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${index + 1}',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: 35,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'user$index',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                '${(20 - index) * 1000} points',
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

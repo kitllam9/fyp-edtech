@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
+import 'package:fyp_edtech/widgets/appbar.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -14,24 +15,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        title: Text(
-          'Bookmarks',
-          style: TextStyle(
-            color: AppColors.secondary,
-          ),
-        ),
-        centerTitle: true,
-        leading: TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Icon(
-            Symbols.arrow_back_ios,
-            color: AppColors.secondary,
-            size: 20,
-          ),
-        ),
-      ),
+      appBar: mainAppBar(context, title: 'Bookmarks'),
       body: ListView.builder(
         padding: EdgeInsets.all(12),
         itemCount: 10,

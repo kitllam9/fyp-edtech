@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
+import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class SearchPage extends StatefulWidget {
@@ -48,13 +49,7 @@ class _SearchPageState extends State<SearchPage> {
                 color: AppColors.text,
                 fontWeight: FontWeight.w400,
               ),
-              suffixIcon: TextButton(
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  splashFactory: NoSplash.splashFactory,
-                ),
+              suffixIcon: GenericButton(
                 child: Icon(
                   Symbols.close,
                   color: AppColors.primary,
@@ -75,6 +70,26 @@ class _SearchPageState extends State<SearchPage> {
               child: SizedBox(
                 width: Globals.screenWidth! * 0.42,
                 height: Random().nextInt(250) + 100,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        index.isEven ? 'Exercise' : 'Article',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Description',
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

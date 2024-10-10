@@ -36,6 +36,7 @@ class _MainAppState extends State<MainApp> {
   @override
   void didChangeDependencies() {
     Globals.screenWidth = MediaQuery.of(context).size.width;
+    Globals.screenHeight = MediaQuery.of(context).size.height;
     super.didChangeDependencies();
   }
 

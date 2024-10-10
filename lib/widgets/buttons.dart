@@ -25,3 +25,49 @@ class GenericButton extends StatelessWidget {
     );
   }
 }
+
+class IconTextButton extends StatelessWidget {
+  final Icon icon;
+  final Text text;
+  final Function() onPressed;
+  final Color? backgroundColor;
+  final double? width;
+  final double? height;
+  const IconTextButton({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onPressed,
+    this.backgroundColor,
+    this.width,
+    this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        overlayColor: Colors.transparent,
+        minimumSize: Size(width ?? 0, height ?? 0),
+        padding: EdgeInsets.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          SizedBox(
+            width: 5,
+          ),
+          text,
+        ],
+      ),
+    );
+  }
+}

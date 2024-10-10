@@ -3,7 +3,7 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/widgets/appbar.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
-import 'package:fyp_edtech/widgets/pdf_from_assets.dart';
+import 'package:fyp_edtech/widgets/pdf_viewer.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
@@ -26,7 +26,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => PDFViewerFromAsset(
+                  builder: (context) => PDFViewer(
                     pdfAssetPath: 'assets/sample.pdf',
                     title: 'Article',
                   ),

@@ -68,13 +68,19 @@ class _SearchPageState extends State<SearchPage> {
                 fontWeight: FontWeight.w400,
               ),
               suffixIcon: GenericButton(
-                child: Icon(
-                  Symbols.close,
-                  color: AppColors.primary,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(
+                    Symbols.close,
+                    color: AppColors.primary,
+                  ),
                 ),
                 onPressed: () {
                   _textEditingController.clear();
                 },
+              ),
+              suffixIconConstraints: BoxConstraints(
+                maxHeight: double.infinity,
               ),
             ),
           ),

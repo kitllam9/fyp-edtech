@@ -6,7 +6,7 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
-import 'package:fyp_edtech/widgets/pdf_from_assets.dart';
+import 'package:fyp_edtech/widgets/pdf_viewer.dart';
 import 'package:fyp_edtech/widgets/placeholder.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PDFViewerFromAsset(
+                            builder: (context) => PDFViewer(
                               title: 'Article',
                               pdfAssetPath: 'assets/sample.pdf',
                             ),

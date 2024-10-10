@@ -18,6 +18,7 @@ class GenericButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         splashFactory: NoSplash.splashFactory,
         overlayColor: Colors.transparent,
+        alignment: Alignment.topLeft,
       ),
       onPressed: onPressed,
       child: child,

@@ -25,7 +25,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         title: 'Profile',
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(right: 15.0),
             child: GenericButton(
               onPressed: () {},
               child: Text(

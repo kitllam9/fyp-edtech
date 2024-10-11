@@ -44,6 +44,7 @@ dependencies:
   google_fonts: ^4.0.4
   shimmer: ^3.0.0
   flutter_cached_pdfview: ^0.4.2
+  simple_animation_progress_bar: ^1.8.2
 
 dev_dependencies:
   flutter_test:

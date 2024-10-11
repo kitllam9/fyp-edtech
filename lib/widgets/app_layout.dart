@@ -9,6 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class AppLayout extends StatefulWidget {
   final int index;
+
+  /// 0: Home
+  /// 1: Search
+  /// 2: Achievement
+  /// 3. Stats
+  /// 4: Profile
   const AppLayout({
     super.key,
     required this.index,

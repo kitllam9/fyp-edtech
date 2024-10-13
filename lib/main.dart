@@ -9,9 +9,16 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,6 +30,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.notoSansTextTheme(),
       ),
       routes: routes,
+      navigatorKey: navigatorKey,
     );
   }
 }

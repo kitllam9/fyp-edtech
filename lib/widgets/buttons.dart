@@ -27,7 +27,7 @@ class GenericButton extends StatelessWidget {
 }
 
 class IconTextButton extends StatelessWidget {
-  final Icon icon;
+  final Icon? icon;
   final Text text;
   final Function() onPressed;
   final Color? backgroundColor;
@@ -35,7 +35,7 @@ class IconTextButton extends StatelessWidget {
   final double? height;
   const IconTextButton({
     super.key,
-    required this.icon,
+    this.icon,
     required this.text,
     required this.onPressed,
     this.backgroundColor,
@@ -61,10 +61,12 @@ class IconTextButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          icon,
-          SizedBox(
-            width: 5,
-          ),
+          if (icon != null) ...[
+            icon!,
+            SizedBox(
+              width: 5,
+            ),
+          ],
           text,
         ],
       ),

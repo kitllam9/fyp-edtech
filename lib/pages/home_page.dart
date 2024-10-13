@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fyp_edtech/pages/exercise/exercise_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(seconds: 3)).then((val) {
+      await Future.delayed(Duration(seconds: 1)).then((val) {
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -67,17 +68,16 @@ class _HomePageState extends State<HomePage> {
                   )
                 : GenericButton(
                     onPressed: () {
-                      if (!index.isEven) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PDFViewer(
-                              title: 'Article',
-                              pdfAssetPath: 'assets/sample.pdf',
-                            ),
-                          ),
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => !index.isEven
+                              ? PDFViewer(
+                                  pdfAssetPath: 'assets/sample.pdf',
+                                )
+                              : ExercisePage(),
+                        ),
+                      );
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
+import 'package:fyp_edtech/utils/file_io.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
@@ -27,6 +32,7 @@ class _CompletedPageState extends State<CompletedPage> {
   double ratio = 0;
 
   bool _progressAnimationFinished = false;
+  bool _initDisplay = true;
 
   void ratioVal() {
     if (ratio == 0) {
@@ -36,140 +42,188 @@ class _CompletedPageState extends State<CompletedPage> {
       if (ratio == _currentValue / _totalPoints) {
         Future.delayed(Duration(milliseconds: 500), () {
           setState(() {
-            ratio = _targetValue / _totalPoints;
+            _initDisplay = false;
+            if (_targetValue / _totalPoints >= 1) {
+              ratio = 1;
+            } else {
+              ratio = _targetValue / _totalPoints;
+            }
           });
-        }).then((val) {
-          Future.delayed(Duration(milliseconds: 750), () {
-            setState(() {
-              _progressAnimationFinished = true;
+          if (_targetValue / _totalPoints >= 1 && ratio == 1) {
+            Future.delayed(Duration(milliseconds: 500), () {
+              setState(() {
+                ratio = 0;
+              });
+              if (ratio == 0) {
+                Future.delayed(Duration(milliseconds: 500), () {
+                  setState(() {
+                    ratio = (_targetValue - _totalPoints) / _totalPoints;
+                  });
+                  if (ratio == (_targetValue - _totalPoints) / _totalPoints) {
+                    Future.delayed(Duration(milliseconds: 500), () {
+                      setState(() {
+                        _progressAnimationFinished = true;
+                      });
+                    });
+                  }
+                });
+              }
             });
-          });
+          } else {
+            Future.delayed(Duration(milliseconds: 500), () {
+              setState(() {
+                _progressAnimationFinished = true;
+              });
+            });
+          }
         });
       }
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     ratioVal();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        floatingActionButton: Container(
-          margin: EdgeInsets.only(bottom: 50),
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconTextButton(
-                onPressed: () {},
-                backgroundColor: AppColors.primary,
-                width: Globals.screenWidth! * 0.8,
-                height: 35,
-                icon: Icon(
-                  Symbols.download,
-                  color: AppColors.secondary,
-                ),
-                text: Text(
-                  'Save the article locally',
+              SizedBox(
+                height: Globals.screenHeight! * 0.3,
+              ),
+              if (widget.type == CompletedType.article)
+                Text(
+                  'You\'ve completed a reading!',
                   style: TextStyle(
-                    color: AppColors.secondary,
+                    fontSize: 24,
+                    color: AppColors.primary,
                   ),
                 ),
+              SizedBox(
+                height: 50,
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Text slide transitions
+                  AnimatedContainer(
+                    width: Globals.screenWidth! * 0.8,
+                    duration: Duration(milliseconds: 750),
+                    curve: Curves.easeOutCubic,
+                    transform: Matrix4.translationValues(0, _progressAnimationFinished ? -20 : 0, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('+${(_targetValue - _currentValue).toStringAsFixed(0)} Points'),
+                      ],
+                    ),
+                  ),
+                  AnimatedContainer(
+                    width: Globals.screenWidth! * 0.8,
+                    duration: Duration(milliseconds: 750),
+                    curve: Curves.easeOutCubic,
+                    transform: Matrix4.translationValues(0, _progressAnimationFinished ? 20 : 0, 0),
+                    child: Row(
+                      children: [
+                        Text('(${(_totalPoints - _targetValue).toStringAsFixed(0)} points until the next badge)'),
+                      ],
+                    ),
+                  ),
+                  // Mask to hide text before transition
+                  Container(
+                    color: AppColors.scaffold,
+                    height: 20,
+                    width: Globals.screenWidth,
+                  ),
+                  SimpleAnimationProgressBar(
+                    ratio: ratio,
+                    width: Globals.screenWidth! * 0.8,
+                    height: 4,
+                    borderRadius: BorderRadius.circular(8),
+                    direction: Axis.horizontal,
+                    backgroundColor: AppColors.unselected,
+                    foregrondColor: AppColors.primary,
+                    duration: _initDisplay || ratio == 0 ? Duration.zero : Duration(milliseconds: 500),
+                    curve: Curves.easeInOutCubic,
+                  ),
+                ],
               ),
               SizedBox(
-                height: 15,
+                height: Globals.screenHeight! * 0.27,
               ),
-              IconTextButton(
-                onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => AppLayout(index: 0),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
+              Column(
+                children: [
+                  IconTextButton(
+                    onPressed: () async {
+                      File file = await getFileFromAssets('sample.pdf');
+                      Uint8List bytes = file.readAsBytesSync();
+
+                      await LocalStorage.write(bytes, 'sample.pdf').then((val) {
+                        final snackBar = SnackBar(
+                          content: Text(
+                            'File saved sucessfully!',
+                            style: TextStyle(color: AppColors.secondary),
+                          ),
+                          backgroundColor: AppColors.primary.withOpacity(0.9),
+                          behavior: SnackBarBehavior.floating,
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      });
+                    },
+                    backgroundColor: AppColors.primary,
+                    width: Globals.screenWidth! * 0.8,
+                    height: 35,
+                    icon: Icon(
+                      Symbols.download,
+                      color: AppColors.secondary,
+                    ),
+                    text: Text(
+                      'Save',
+                      style: TextStyle(
+                        color: AppColors.secondary,
+                      ),
+                    ),
                   ),
-                  (route) => false,
-                ),
-                backgroundColor: AppColors.primary,
-                width: Globals.screenWidth! * 0.8,
-                height: 35,
-                icon: Icon(
-                  Symbols.home,
-                  color: AppColors.secondary,
-                ),
-                text: Text(
-                  'Return to Home',
-                  style: TextStyle(
-                    color: AppColors.secondary,
+                  SizedBox(
+                    height: 15,
                   ),
-                ),
+                  IconTextButton(
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) => AppLayout(index: 0),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                      (route) => false,
+                    ),
+                    backgroundColor: AppColors.primary,
+                    width: Globals.screenWidth! * 0.8,
+                    height: 35,
+                    icon: Icon(
+                      Symbols.home,
+                      color: AppColors.secondary,
+                    ),
+                    text: Text(
+                      'Return to Home',
+                      style: TextStyle(
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.type == CompletedType.article)
-                  Text(
-                    'You\'ve completed a reading!',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                SizedBox(
-                  height: 50,
-                ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Text slide transitions
-                    AnimatedContainer(
-                      width: Globals.screenWidth! * 0.8,
-                      duration: Duration(milliseconds: 750),
-                      curve: Curves.easeOutCubic,
-                      transform: Matrix4.translationValues(0, _progressAnimationFinished ? -20 : 0, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text('+${(_targetValue - _currentValue).toStringAsFixed(0)} Points'),
-                        ],
-                      ),
-                    ),
-                    AnimatedContainer(
-                      width: Globals.screenWidth! * 0.8,
-                      duration: Duration(milliseconds: 750),
-                      curve: Curves.easeOutCubic,
-                      transform: Matrix4.translationValues(0, _progressAnimationFinished ? 20 : 0, 0),
-                      child: Row(
-                        children: [
-                          Text('(${(_totalPoints - _targetValue).toStringAsFixed(0)} points until the next badge)'),
-                        ],
-                      ),
-                    ),
-                    // Mask to hide text before transition
-                    Container(
-                      color: AppColors.scaffold,
-                      height: 20,
-                      width: Globals.screenWidth,
-                    ),
-                    SimpleAnimationProgressBar(
-                      ratio: ratio,
-                      width: Globals.screenWidth! * 0.8,
-                      height: 4,
-                      borderRadius: BorderRadius.circular(8),
-                      direction: Axis.horizontal,
-                      backgroundColor: AppColors.unselected,
-                      foregrondColor: AppColors.primary,
-                      duration: ratio <= _currentValue / _totalPoints ? Duration.zero : Duration(milliseconds: 750),
-                      curve: Curves.easeInOutCubic,
-                    ),
-                  ],
-                ),
-              ],
-            ),
           ),
         ),
       ),

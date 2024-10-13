@@ -6,12 +6,12 @@ import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
+import 'package:fyp_edtech/widgets/dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PDFViewer extends StatefulWidget {
   final String pdfAssetPath;
-  final String title;
-  const PDFViewer({super.key, required this.pdfAssetPath, required this.title});
+  const PDFViewer({super.key, required this.pdfAssetPath});
 
   @override
   State<PDFViewer> createState() => _PDFViewerState();
@@ -72,7 +72,11 @@ class _PDFViewerState extends State<PDFViewer> {
                       ),
                     );
                   } else {
-                    Navigator.of(context).pop();
+                    generalDialog(
+                      icon: Symbols.help,
+                      title: 'Are you sure?',
+                      msg: 'Do you really want to exit? All your unsaved progress will be lost.',
+                    );
                   }
                 },
               ),
@@ -99,7 +103,6 @@ class _PDFViewerState extends State<PDFViewer> {
         child: Stack(
           children: [
             PDF(
-              enableSwipe: true,
               swipeHorizontal: true,
               autoSpacing: true,
               pageFling: true,
@@ -119,27 +122,12 @@ class _PDFViewerState extends State<PDFViewer> {
               widget.pdfAssetPath,
               errorWidget: (dynamic error) => Center(child: Text(error.toString())),
             ),
-            GestureDetector(
-              onTap: () {
-                _isIdling = false;
-                setState(() {
-                  idleTimer?.cancel();
-                  idleTimer = Timer(Duration(seconds: 3), () {
-                    if (mounted) {
-                      setState(() {
-                        _isIdling = true;
-                      });
-                    }
-                  });
-                });
-              },
-            ),
             if (_currentPage != null && _total != null)
               AnimatedContainer(
-                duration: Duration(milliseconds: 500),
+                duration: Duration(milliseconds: 300),
                 curve: Curves.fastOutSlowIn,
                 height: 2,
-                width: MediaQuery.of(context).size.width * ((_currentPage! + 1) / _total!),
+                width: Globals.screenWidth! * ((_currentPage! + 1) / _total!),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(5),
@@ -198,6 +186,26 @@ class _PDFViewerState extends State<PDFViewer> {
                   ],
                 ),
               ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _isIdling = false;
+                setState(() {
+                  idleTimer?.cancel();
+                  idleTimer = Timer(Duration(seconds: 3), () {
+                    if (mounted) {
+                      setState(() {
+                        _isIdling = true;
+                      });
+                    }
+                  });
+                });
+              },
+              // onHorizontalDragEnd: (details) {
+              //   setState(() {
+              //     _isIdling = true;
+              //   });
+              // },
             ),
           ],
         ),

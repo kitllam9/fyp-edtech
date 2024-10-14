@@ -41,10 +41,11 @@ dependencies:
   http: ^1.2.2
   google_fonts: ^6.2.1
   shimmer: ^3.0.0
-  flutter_cached_pdfview: ^0.4.2
   simple_animation_progress_bar: ^1.8.2
   path_provider: ^2.1.4
   permission_handler: ^11.3.1
+  syncfusion_flutter_pdfviewer: ^27.1.52
+  syncfusion_flutter_core: ^27.1.52
 
 dev_dependencies:
   flutter_test:

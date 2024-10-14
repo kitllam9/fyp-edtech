@@ -98,7 +98,7 @@ class _CompletedPageState extends State<CompletedPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: Globals.screenHeight! * 0.3,
+                height: widget.type == CompletedType.article ? Globals.screenHeight! * 0.3 : Globals.screenHeight! * 0.22,
               ),
               if (widget.type == CompletedType.article)
                 Text(
@@ -108,6 +108,26 @@ class _CompletedPageState extends State<CompletedPage> {
                     color: AppColors.primary,
                   ),
                 ),
+              if (widget.type == CompletedType.exercise) ...[
+                Text(
+                  '90%',
+                  style: TextStyle(
+                    fontSize: 66,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'You got 9 out of 10 questions right!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
               SizedBox(
                 height: 50,
               ),
@@ -164,32 +184,34 @@ class _CompletedPageState extends State<CompletedPage> {
                 children: [
                   IconTextButton(
                     onPressed: () async {
-                      File file = await getFileFromAssets('sample.pdf');
-                      Uint8List bytes = file.readAsBytesSync();
+                      if (widget.type == CompletedType.article) {
+                        File file = await getFileFromAssets('sample.pdf');
+                        Uint8List bytes = file.readAsBytesSync();
 
-                      await LocalStorage.write(bytes, 'sample.pdf').then((val) {
-                        final snackBar = SnackBar(
-                          content: Text(
-                            'File saved sucessfully!',
-                            style: TextStyle(color: AppColors.secondary),
-                          ),
-                          backgroundColor: AppColors.primary.withOpacity(0.9),
-                          behavior: SnackBarBehavior.floating,
-                        );
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
-                      });
+                        await LocalStorage.write(bytes, 'sample.pdf').then((val) {
+                          final snackBar = SnackBar(
+                            content: Text(
+                              'File saved sucessfully!',
+                              style: TextStyle(color: AppColors.secondary),
+                            ),
+                            backgroundColor: AppColors.primary.withOpacity(0.9),
+                            behavior: SnackBarBehavior.floating,
+                          );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          }
+                        });
+                      } else if (widget.type == CompletedType.exercise) {}
                     },
                     backgroundColor: AppColors.primary,
                     width: Globals.screenWidth! * 0.8,
                     height: 35,
                     icon: Icon(
-                      Symbols.download,
+                      widget.type == CompletedType.article ? Symbols.download : Symbols.insights,
                       color: AppColors.secondary,
                     ),
                     text: Text(
-                      'Save',
+                      widget.type == CompletedType.article ? 'Save' : 'Review Your Results',
                       style: TextStyle(
                         color: AppColors.secondary,
                       ),

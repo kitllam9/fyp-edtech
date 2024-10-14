@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/pages/exercise/multiple_choice.dart';
+import 'package:fyp_edtech/pages/exercise/short_question.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
-import 'package:fyp_edtech/widgets/dialog.dart';
+import 'package:fyp_edtech/styles/dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ExercisePage extends StatefulWidget {
@@ -15,11 +16,13 @@ class ExercisePage extends StatefulWidget {
 }
 
 class _ExercisePageState extends State<ExercisePage> {
-  int? _currentPage = 0;
-  int? _total = 5;
+  int? _currentPage = 1;
+  final int _total = 5;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: Globals.screenHeight! * 0.06),
@@ -67,16 +70,16 @@ class _ExercisePageState extends State<ExercisePage> {
               height: 35,
               backgroundColor: AppColors.primary,
               icon: Icon(
-                _currentPage == (_total ?? -1) - 1 ? Symbols.check : Symbols.arrow_forward,
+                _currentPage == _total ? Symbols.check : Symbols.arrow_forward,
                 color: AppColors.secondary,
                 size: 18,
               ),
               text: Text(
-                _currentPage == (_total ?? -1) - 1 ? 'Finish' : 'Next',
+                _currentPage == _total ? 'Finish' : 'Next',
                 style: TextStyle(color: AppColors.secondary),
               ),
               onPressed: () {
-                if (_currentPage == (_total ?? -1) - 1) {
+                if (_currentPage == _total) {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => CompletedPage(
@@ -85,7 +88,9 @@ class _ExercisePageState extends State<ExercisePage> {
                     ),
                   );
                 } else {
-                  // Navigator.of(context).pop();
+                  setState(() {
+                    _currentPage = _currentPage! + 1;
+                  });
                 }
               },
             ),
@@ -95,26 +100,35 @@ class _ExercisePageState extends State<ExercisePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            MultipleChoice(
-              question: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Question'),
-                ],
-              ),
-              choices: {
-                'A': '12323',
-                'B': '12323',
-                'C': '12323',
-                'D': '12323',
-              },
-            ),
-            if (_currentPage != null && _total != null)
+            _currentPage!.isEven
+                ? MultipleChoice(
+                    question: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Question'),
+                      ],
+                    ),
+                    choices: {
+                      'A': '12323',
+                      'B': '12323',
+                      'C': '12323',
+                      'D': '12323',
+                    },
+                  )
+                : ShortQuestion(
+                    question: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Question'),
+                      ],
+                    ),
+                  ),
+            if (_currentPage != null)
               AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 curve: Curves.fastOutSlowIn,
                 height: 2,
-                width: Globals.screenWidth! * ((_currentPage! + 1) / _total!),
+                width: Globals.screenWidth! * ((_currentPage! + 1) / _total),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(5),

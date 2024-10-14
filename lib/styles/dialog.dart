@@ -93,7 +93,10 @@ void generalDialog({
                   backgroundColor: AppColors.primary,
                 )
               ],
-            )
+            ),
+            SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),

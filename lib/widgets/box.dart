@@ -4,20 +4,25 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 class Box extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? margin;
+  final BoxConstraints? constraints;
+  final Color? backgroundColor;
   const Box({
     super.key,
     required this.child,
     this.margin,
+    this.constraints,
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
+      constraints: constraints,
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: AppColors.secondary,
+        color: backgroundColor ?? AppColors.secondary,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),

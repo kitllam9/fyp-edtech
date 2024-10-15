@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
         'icon': Symbols.logout,
         'onPressed': () {
           Navigator.of(context).pushNamed(
-            '/bookmark',
+            '/auth',
           );
         }
       },

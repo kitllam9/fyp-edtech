@@ -16,7 +16,7 @@ class ExercisePage extends StatefulWidget {
 }
 
 class _ExercisePageState extends State<ExercisePage> {
-  int? _currentPage = 1;
+  int _currentPage = 1;
   final int _total = 5;
 
   @override
@@ -89,7 +89,7 @@ class _ExercisePageState extends State<ExercisePage> {
                   );
                 } else {
                   setState(() {
-                    _currentPage = _currentPage! + 1;
+                    _currentPage = _currentPage + 1;
                   });
                 }
               },
@@ -100,7 +100,7 @@ class _ExercisePageState extends State<ExercisePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            _currentPage!.isEven
+            _currentPage.isEven
                 ? MultipleChoice(
                     question: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,17 +123,16 @@ class _ExercisePageState extends State<ExercisePage> {
                       ],
                     ),
                   ),
-            if (_currentPage != null)
-              AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.fastOutSlowIn,
-                height: 2,
-                width: Globals.screenWidth! * ((_currentPage! + 1) / _total),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(5),
-                ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.fastOutSlowIn,
+              height: 2,
+              width: Globals.screenWidth! * (_currentPage / _total),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(5),
               ),
+            ),
           ],
         ),
       ),

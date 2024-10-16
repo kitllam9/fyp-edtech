@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         Box(
           child: Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 23),
             child: Column(
               children: [
                 for (var item in menuItems!.entries) ...[
@@ -124,19 +124,20 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: AppColors.primary,
                             ),
                             SizedBox(
-                              width: 8,
+                              width: 10,
                             ),
                             Text(
                               item.key,
                               style: TextStyle(
                                 color: AppColors.primary,
+                                fontSize: 16,
                               ),
                             ),
                           ],
                         ),
                         if (item.key != menuItems!.entries.last.key)
                           Divider(
-                            height: 35,
+                            height: 40,
                           ),
                       ],
                     ),

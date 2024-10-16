@@ -4,21 +4,29 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 class MainTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String? Function(String? value)? validator;
+  final void Function(String value)? onChanged;
   final bool? obsureText;
+  final Widget? suffix;
+  final String? hintText;
   const MainTextFormField({
     super.key,
     required this.controller,
     this.validator,
     this.obsureText,
+    this.onChanged,
+    this.suffix,
+    this.hintText,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: AppColors.primary,
       obscureText: obsureText ?? false,
+      onChanged: onChanged,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(15),
         enabledBorder: OutlineInputBorder(
@@ -46,6 +54,11 @@ class MainTextFormField extends StatelessWidget {
             width: 1.5,
           ),
         ),
+        suffixIcon: suffix,
+        suffixIconConstraints: BoxConstraints(
+          maxHeight: double.infinity,
+        ),
+        hintText: hintText,
       ),
     );
   }

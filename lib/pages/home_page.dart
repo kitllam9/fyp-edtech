@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MasonryGridView.builder(
+      physics: _isLoading ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
       itemCount: 10,
       gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemBuilder: (context, index) => Box(
@@ -95,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                         Text(
                           'Description',
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: AppColors.text,
                           ),
                         ),
                       ],

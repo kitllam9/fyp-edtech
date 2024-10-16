@@ -36,7 +36,7 @@ class _StatsPageState extends State<StatsPage> {
               ),
               Tab(
                 child: Text(
-                  'Stats',
+                  'Quests',
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -91,11 +91,32 @@ class _StatsPageState extends State<StatsPage> {
                   ),
                 ),
                 ListView.builder(
-                  itemCount: 2,
+                  itemCount: 5,
                   itemBuilder: (context, index) => Box(
-                    margin: EdgeInsets.all(5),
-                    child: SizedBox(
-                      height: 300,
+                    margin: EdgeInsets.fromLTRB(5, 5, 5, 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            index == 0 ? 'Daily Quest' : 'Regular Quest',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 20,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            'Description',
+                            style: TextStyle(
+                              color: AppColors.text,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

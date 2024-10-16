@@ -28,7 +28,7 @@ class _CompletedPageState extends State<CompletedPage> {
   final double _totalPoints = 100;
 
   final double _currentValue = 24;
-  final double _targetValue = 78;
+  final double _targetValue = 150;
   double ratio = 0;
 
   bool _progressAnimationFinished = false;
@@ -98,7 +98,8 @@ class _CompletedPageState extends State<CompletedPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: widget.type == CompletedType.article ? Globals.screenHeight! * 0.3 : Globals.screenHeight! * 0.22,
+                height:
+                    widget.type == CompletedType.article ? Globals.screenHeight! * 0.25 : Globals.screenHeight! * 0.2,
               ),
               if (widget.type == CompletedType.article)
                 Text(
@@ -178,7 +179,7 @@ class _CompletedPageState extends State<CompletedPage> {
                 ],
               ),
               SizedBox(
-                height: Globals.screenHeight! * 0.27,
+                height: Globals.screenHeight! * 0.25,
               ),
               Column(
                 children: [
@@ -218,7 +219,7 @@ class _CompletedPageState extends State<CompletedPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   IconTextButton(
                     onPressed: () => Navigator.of(context).pushAndRemoveUntil(

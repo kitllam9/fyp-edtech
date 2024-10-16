@@ -87,6 +87,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         Expanded(
           child: MasonryGridView.builder(
+            physics: _isLoading ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
             itemCount: 10,
             gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemBuilder: (context, index) => Box(
@@ -129,6 +130,9 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             Text(
                               'Description',
+                              style: TextStyle(
+                                color: AppColors.text,
+                              ),
                             ),
                           ],
                         ),

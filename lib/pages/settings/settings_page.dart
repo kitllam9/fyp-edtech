@@ -16,7 +16,7 @@ class SettingsPage extends StatelessWidget {
           Box(
             margin: EdgeInsets.all(12),
             child: Padding(
-              padding: const EdgeInsets.all(18.0),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 23),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -31,18 +31,19 @@ class SettingsPage extends StatelessWidget {
                               'Profile',
                               style: TextStyle(
                                 color: AppColors.primary,
+                                fontSize: 16,
                               ),
                             ),
                           ],
                         ),
                         Divider(
-                          height: 35,
+                          height: 40,
                         ),
                       ],
                     ),
                   ),
                   GenericButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed('/preferences'),
                     child: Column(
                       children: [
                         Row(
@@ -51,6 +52,7 @@ class SettingsPage extends StatelessWidget {
                               'Preferences',
                               style: TextStyle(
                                 color: AppColors.primary,
+                                fontSize: 16,
                               ),
                             ),
                           ],

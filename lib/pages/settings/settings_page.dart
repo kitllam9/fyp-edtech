@@ -16,7 +16,7 @@ class SettingsPage extends StatelessWidget {
           Box(
             margin: EdgeInsets.all(12),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 23),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -37,7 +37,7 @@ class SettingsPage extends StatelessWidget {
                           ],
                         ),
                         Divider(
-                          height: 40,
+                          height: 35,
                         ),
                       ],
                     ),

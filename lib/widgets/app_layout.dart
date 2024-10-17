@@ -4,7 +4,6 @@ import 'package:fyp_edtech/pages/home_page.dart';
 import 'package:fyp_edtech/pages/profile_page.dart';
 import 'package:fyp_edtech/pages/search_page.dart';
 import 'package:fyp_edtech/pages/stats_page.dart';
-import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AppLayout extends StatefulWidget {
@@ -46,7 +45,7 @@ class _AppLayoutState extends State<AppLayout> {
     return Scaffold(
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: AppColors.primary,
+          canvasColor: Color(0xFF0F0F0F),
           splashFactory: NoSplash.splashFactory,
           highlightColor: Colors.transparent,
         ),
@@ -54,8 +53,8 @@ class _AppLayoutState extends State<AppLayout> {
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: false,
           showUnselectedLabels: false,
-          unselectedItemColor: AppColors.unselected,
-          selectedItemColor: AppColors.secondary,
+          unselectedItemColor: Color(0xFFB1B1B1),
+          selectedItemColor: Colors.white,
           iconSize: 32,
           currentIndex: _index!,
           items: [

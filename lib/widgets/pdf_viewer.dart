@@ -93,6 +93,9 @@ class _PDFViewerState extends State<PDFViewer> {
                       icon: Symbols.help,
                       title: 'Are you sure?',
                       msg: 'Do you really want to exit? All your unsaved progress will be lost.',
+                      onConfirmed: () => Navigator.of(context).popUntil(
+                        (route) => route.isFirst || route.settings.name == '/bookmark',
+                      ),
                     );
                   }
                 },

@@ -50,8 +50,8 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(8.0),
             child: _isLoading
                 ? Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
+                    baseColor: AppColors.shimmerBase,
+                    highlightColor: AppColors.shimmerHighlight,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

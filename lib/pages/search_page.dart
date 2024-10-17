@@ -99,8 +99,8 @@ class _SearchPageState extends State<SearchPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: _isLoading
                       ? Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
+                          baseColor: AppColors.shimmerBase,
+                          highlightColor: AppColors.shimmerHighlight,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -123,6 +123,7 @@ class _SearchPageState extends State<SearchPage> {
                               index.isEven ? 'Exercise' : 'Article',
                               style: TextStyle(
                                 fontSize: 18,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(

@@ -47,6 +47,7 @@ class _ExercisePageState extends State<ExercisePage> {
                   icon: Symbols.help,
                   title: 'Are you sure?',
                   msg: 'Do you really want to exit? All your unsaved progress will be lost.',
+                  onConfirmed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false),
                 );
               },
             ),

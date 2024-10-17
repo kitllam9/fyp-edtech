@@ -12,6 +12,7 @@ class ForgetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -28,7 +29,12 @@ class ForgetPasswordPage extends StatelessWidget {
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 30),
         child: IconTextButton(
-          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false),
+          onPressed: () {
+            if (!formKey.currentState!.validate()) {
+              return;
+            }
+            Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+          },
           backgroundColor: AppColors.primary,
           width: Globals.screenWidth! * 0.55,
           height: 40,
@@ -43,41 +49,44 @@ class ForgetPasswordPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Text(
-              'Forgot Your Password?',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                'No worries. Enter your email and we\'ll help you reset your password.',
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Text(
+                'Forgot Your Password?',
                 style: TextStyle(
                   color: AppColors.primary,
-                  fontSize: 16,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            MainTextFormField(
-              controller: emailController,
-              validator: (value) {
-                if (value == null || !EmailValidator.validate(value)) {
-                  return 'Invalid email address.';
-                }
-                return null;
-              },
-              hintText: 'Email',
-            ),
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Text(
+                  'No worries. Enter your email and we\'ll help you reset your password.',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              MainTextFormField(
+                controller: emailController,
+                validator: (value) {
+                  if (value == null || value.isEmpty || !EmailValidator.validate(value)) {
+                    return 'Invalid email address.';
+                  }
+                  return null;
+                },
+                hintText: 'Email',
+              ),
+            ],
+          ),
         ),
       ),
     );

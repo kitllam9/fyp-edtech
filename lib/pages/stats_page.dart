@@ -58,7 +58,10 @@ class _StatsPageState extends State<StatsPage> {
                         children: [
                           Text(
                             '${index + 1}',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: AppColors.primary,
+                            ),
                           ),
                           SizedBox(
                             width: 15,
@@ -75,13 +78,19 @@ class _StatsPageState extends State<StatsPage> {
                             children: [
                               Text(
                                 'user$index',
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.primary,
+                                ),
                               ),
                               SizedBox(
                                 height: 5,
                               ),
                               Text(
                                 '${(20 - index) * 1000} points',
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                ),
                               ),
                             ],
                           )

@@ -38,7 +38,7 @@ class _AchievementPageState extends State<AchievementPage> {
                     'Name',
                     style: TextStyle(
                       fontSize: 20,
-                      color: AppColors.text,
+                      color: AppColors.primary,
                     ),
                   ),
                   SizedBox(

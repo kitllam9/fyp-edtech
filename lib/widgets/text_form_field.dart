@@ -8,6 +8,8 @@ class MainTextFormField extends StatelessWidget {
   final bool? obsureText;
   final Widget? suffix;
   final String? hintText;
+  final AutovalidateMode? autovalidateMode;
+  final TextStyle? errorStyle;
   const MainTextFormField({
     super.key,
     required this.controller,
@@ -16,6 +18,8 @@ class MainTextFormField extends StatelessWidget {
     this.onChanged,
     this.suffix,
     this.hintText,
+    this.autovalidateMode,
+    this.errorStyle,
   });
 
   @override
@@ -23,7 +27,7 @@ class MainTextFormField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
       cursorColor: AppColors.primary,
       obscureText: obsureText ?? false,
       onChanged: onChanged,
@@ -54,6 +58,7 @@ class MainTextFormField extends StatelessWidget {
             width: 1.5,
           ),
         ),
+        errorStyle: errorStyle,
         suffixIcon: suffix,
         suffixIconConstraints: BoxConstraints(
           maxHeight: double.infinity,

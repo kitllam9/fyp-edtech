@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fyp_edtech/config/routes.dart';
+import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final SharedPreferences prefs = await LocalStorage.prefs;
+  String? appSettingBrightness = prefs.getString('brightness');
+  if (appSettingBrightness == null) {
+    var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    Globals.darkMode = brightness == Brightness.dark;
+    Globals.brightness = AppBrightness.system;
+  } else {
+    Globals.brightness = appSettingBrightness == 'light' ? AppBrightness.light : AppBrightness.dark;
+    Globals.darkMode = Globals.brightness == AppBrightness.dark;
+  }
   runApp(const MyApp());
 }
 

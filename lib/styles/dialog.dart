@@ -8,6 +8,9 @@ void generalDialog({
   required IconData icon,
   required String title,
   required String msg,
+  required Function() onConfirmed,
+  String? cancelText,
+  String? confirmText,
 }) {
   showDialog(
     context: navigatorKey.currentContext!,
@@ -25,6 +28,7 @@ void generalDialog({
             Icon(
               icon,
               size: 50,
+              color: AppColors.primary,
             ),
             SizedBox(
               height: 15,
@@ -33,7 +37,7 @@ void generalDialog({
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.text,
+                color: AppColors.primary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -68,7 +72,7 @@ void generalDialog({
                     overlayColor: Colors.transparent,
                   ),
                   child: Text(
-                    'No',
+                    cancelText ?? 'No',
                     style: TextStyle(
                       color: AppColors.text,
                     ),
@@ -82,14 +86,12 @@ void generalDialog({
                   width: Globals.screenWidth! * 0.22,
                   height: 30,
                   text: Text(
-                    'Yes',
+                    confirmText ?? 'Yes',
                     style: TextStyle(
                       color: AppColors.secondary,
                     ),
                   ),
-                  onPressed: () => Navigator.of(context).popUntil(
-                    (route) => route.isFirst || route.settings.name == '/bookmark',
-                  ),
+                  onPressed: onConfirmed,
                   backgroundColor: AppColors.primary,
                 )
               ],

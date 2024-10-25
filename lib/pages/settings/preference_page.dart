@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fyp_edtech/main.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/styles/dialog.dart';
@@ -54,7 +57,7 @@ class _PreferencePageState extends State<PreferencePage> {
                   title: 'Are you sure?',
                   msg: 'The application needs to be restarted for the settings to take into effect.',
                   cancelText: 'Cancel',
-                  confirmText: 'Restart',
+                  confirmText: Platform.isAndroid ? 'Restart' : 'Yes',
                   onConfirmed: () async {
                     switch (selectedBrightness) {
                       case AppBrightness.light:
@@ -75,11 +78,11 @@ class _PreferencePageState extends State<PreferencePage> {
                         break;
                       default:
                     }
-                    Restart.restartApp(
-                      // Customizing the restart notification message (only needed on iOS)
-                      notificationTitle: 'Restarting App',
-                      notificationBody: 'Please tap here to open the app again.',
-                    );
+                    if (Platform.isAndroid) {
+                      Restart.restartApp();
+                    } else {
+                      Navigator.of(navigatorKey.currentContext!).pop();
+                    }
                   },
                 );
               },

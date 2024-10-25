@@ -18,7 +18,7 @@ class AppColors {
   static final Color _darkSecondary = Color.fromARGB(255, 22, 22, 22);
   static final Color _darkUnselected = Color(0xFF8E8E8E);
   static final Color _darkScaffold = Color.fromARGB(255, 28, 28, 28);
-  static final Color _darkError = Color(0xFFCF6679);
+  static final Color _darkError = Color.fromARGB(255, 197, 74, 97);
   static final Color _darkSuccess = Color(0xFF4CAF50);
   static final Color _darkShimmerBase = Color.fromARGB(255, 28, 28, 28);
   static final Color _darkShimmerHighlight = Color.fromARGB(255, 35, 35, 35);

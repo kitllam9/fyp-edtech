@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/widgets/box.dart';
+import 'package:fyp_edtech/widgets/buttons.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -56,11 +58,14 @@ class _StatsPageState extends State<StatsPage> {
                       padding: EdgeInsets.all(12),
                       child: Row(
                         children: [
-                          Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.primary,
+                          SizedBox(
+                            width: 25,
+                            child: Text(
+                              '${index + 1}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: AppColors.primary,
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -101,30 +106,43 @@ class _StatsPageState extends State<StatsPage> {
                 ),
                 ListView.builder(
                   itemCount: 5,
-                  itemBuilder: (context, index) => Box(
-                    margin: EdgeInsets.fromLTRB(5, 5, 5, 10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            index == 0 ? 'Daily Quest' : 'Regular Quest',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 20,
+                  itemBuilder: (context, index) => GenericButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CompletedPage(
+                          type: CompletedType.quest,
+                        ),
+                      ),
+                    ),
+                    child: Box(
+                      margin: EdgeInsets.fromLTRB(5, 5, 5, 10),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  index == 0 ? 'Daily Quest' : 'Regular Quest',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                  'Description',
+                                  style: TextStyle(
+                                    color: AppColors.text,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            'Description',
-                            style: TextStyle(
-                              color: AppColors.text,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

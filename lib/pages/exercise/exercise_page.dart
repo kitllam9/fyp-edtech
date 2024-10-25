@@ -106,7 +106,12 @@ class _ExercisePageState extends State<ExercisePage> {
                     question: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Question'),
+                        Text(
+                          'Question',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ],
                     ),
                     choices: {
@@ -120,7 +125,12 @@ class _ExercisePageState extends State<ExercisePage> {
                     question: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Question'),
+                        Text(
+                          'Question',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ],
                     ),
                   ),

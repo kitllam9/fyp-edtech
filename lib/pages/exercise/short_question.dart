@@ -46,6 +46,9 @@ class ShortQuestion extends StatelessWidget {
                       ),
                     ),
                     hintText: 'Answer',
+                    hintStyle: TextStyle(
+                      color: AppColors.primary.withOpacity(0.5),
+                    ),
                   ),
                 ),
               ],

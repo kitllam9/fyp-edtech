@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/main.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/file_io.dart';
 import 'package:fyp_edtech/utils/globals.dart';
+import 'package:fyp_edtech/utils/misc.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -14,6 +17,7 @@ import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart
 enum CompletedType {
   article,
   exercise,
+  quest,
 }
 
 class CompletedPage extends StatefulWidget {
@@ -28,13 +32,13 @@ class _CompletedPageState extends State<CompletedPage> {
   final double _totalPoints = 100;
 
   final double _currentValue = 24;
-  final double _targetValue = 150;
+  final double _targetValue = 120;
   double ratio = 0;
 
   bool _progressAnimationFinished = false;
   bool _initDisplay = true;
 
-  void ratioVal() {
+  void ratioVal() async {
     if (ratio == 0) {
       setState(() {
         ratio = _currentValue / _totalPoints;
@@ -79,6 +83,34 @@ class _CompletedPageState extends State<CompletedPage> {
         });
       }
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (_targetValue >= _totalPoints) {
+        await Future.delayed(Duration(milliseconds: 350));
+        if (!mounted) return;
+        ElegantNotification(
+          toastDuration: Duration(seconds: 5),
+          animationDuration: Duration(seconds: 1),
+          animationCurve: Curves.easeInOut,
+          title: Text(
+            'Badge Title',
+            style: TextStyle(
+              color: AppColors.secondary,
+            ),
+          ),
+          description: Text(
+            "Some badge description",
+            style: TextStyle(
+              color: AppColors.secondary,
+            ),
+          ),
+          icon: Icon(
+            Icons.workspace_premium,
+            color: AppColors.secondary,
+          ),
+          progressIndicatorColor: AppColors.secondary,
+        ).show(context);
+      }
+    });
   }
 
   @override
@@ -129,6 +161,14 @@ class _CompletedPageState extends State<CompletedPage> {
                   ),
                 ),
               ],
+              if (widget.type == CompletedType.quest)
+                Text(
+                  'You\'ve completed a quest!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: AppColors.primary,
+                  ),
+                ),
               SizedBox(
                 height: 50,
               ),
@@ -144,7 +184,12 @@ class _CompletedPageState extends State<CompletedPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text('+${(_targetValue - _currentValue).toStringAsFixed(0)} Points'),
+                        Text(
+                          '+${(_targetValue - _currentValue).toStringAsFixed(0)} Points',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -155,7 +200,12 @@ class _CompletedPageState extends State<CompletedPage> {
                     transform: Matrix4.translationValues(0, _progressAnimationFinished ? 20 : 0, 0),
                     child: Row(
                       children: [
-                        Text('(${(_totalPoints - _targetValue).toStringAsFixed(0)} points until the next badge)'),
+                        Text(
+                          '(${(_targetValue % _totalPoints == 0 ? _totalPoints : _targetValue % _totalPoints).toStringAsFixed(0)} points until the next badge)',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -179,45 +229,46 @@ class _CompletedPageState extends State<CompletedPage> {
                 ],
               ),
               SizedBox(
-                height: Globals.screenHeight! * 0.25,
+                height: widget.type == CompletedType.quest ? Globals.screenHeight! * 0.3 : Globals.screenHeight! * 0.25,
               ),
               Column(
                 children: [
-                  IconTextButton(
-                    onPressed: () async {
-                      if (widget.type == CompletedType.article) {
-                        File file = await getFileFromAssets('sample.pdf');
-                        Uint8List bytes = file.readAsBytesSync();
+                  if (widget.type != CompletedType.quest)
+                    IconTextButton(
+                      onPressed: () async {
+                        if (widget.type == CompletedType.article) {
+                          File file = await getFileFromAssets('sample.pdf');
+                          Uint8List bytes = file.readAsBytesSync();
 
-                        await LocalStorage.write(bytes, 'sample.pdf').then((val) {
-                          final snackBar = SnackBar(
-                            content: Text(
-                              'File saved sucessfully!',
-                              style: TextStyle(color: AppColors.secondary),
-                            ),
-                            backgroundColor: AppColors.primary.withOpacity(0.9),
-                            behavior: SnackBarBehavior.floating,
-                          );
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }
-                        });
-                      } else if (widget.type == CompletedType.exercise) {}
-                    },
-                    backgroundColor: AppColors.primary,
-                    width: Globals.screenWidth! * 0.8,
-                    height: 35,
-                    icon: Icon(
-                      widget.type == CompletedType.article ? Symbols.download : Symbols.insights,
-                      color: AppColors.secondary,
-                    ),
-                    text: Text(
-                      widget.type == CompletedType.article ? 'Save' : 'Review Your Results',
-                      style: TextStyle(
+                          await LocalStorage.write(bytes, 'sample.pdf').then((val) {
+                            final snackBar = SnackBar(
+                              content: Text(
+                                'File saved sucessfully!',
+                                style: TextStyle(color: AppColors.secondary),
+                              ),
+                              backgroundColor: AppColors.primary.withOpacity(0.9),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            }
+                          });
+                        } else if (widget.type == CompletedType.exercise) {}
+                      },
+                      backgroundColor: AppColors.primary,
+                      width: Globals.screenWidth! * 0.8,
+                      height: 35,
+                      icon: Icon(
+                        widget.type == CompletedType.article ? Symbols.download : Symbols.insights,
                         color: AppColors.secondary,
                       ),
+                      text: Text(
+                        widget.type == CompletedType.article ? 'Save' : 'Review Your Results',
+                        style: TextStyle(
+                          color: AppColors.secondary,
+                        ),
+                      ),
                     ),
-                  ),
                   SizedBox(
                     height: 20,
                   ),

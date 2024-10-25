@@ -31,6 +31,7 @@ class MainTextFormField extends StatelessWidget {
       cursorColor: AppColors.primary,
       obscureText: obsureText ?? false,
       onChanged: onChanged,
+      style: TextStyle(color: AppColors.primary),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(15),
         enabledBorder: OutlineInputBorder(
@@ -58,7 +59,7 @@ class MainTextFormField extends StatelessWidget {
             width: 1.5,
           ),
         ),
-        errorStyle: errorStyle,
+        errorStyle: errorStyle ?? TextStyle(color: AppColors.error),
         suffixIcon: suffix,
         suffixIconConstraints: BoxConstraints(
           maxHeight: double.infinity,

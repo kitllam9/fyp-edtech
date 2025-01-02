@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/pages/achievement_page.dart';
 import 'package:fyp_edtech/pages/home_page.dart';
 import 'package:fyp_edtech/pages/profile_page.dart';
 import 'package:fyp_edtech/pages/search_page.dart';
 import 'package:fyp_edtech/pages/stats_page.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AppLayout extends StatefulWidget {
@@ -90,9 +92,19 @@ class _AppLayoutState extends State<AppLayout> {
             ),
           ],
           onTap: (value) {
-            setState(() {
-              _index = value;
-            });
+            if (value == 4) {
+              if (!GetIt.instance.get<User>().loggedIn) {
+                Navigator.of(context).pushNamed('/auth');
+              } else {
+                setState(() {
+                  _index = value;
+                });
+              }
+            } else {
+              setState(() {
+                _index = value;
+              });
+            }
           },
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -13,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   Map<String, Map>? menuItems;
+  final User user = GetIt.instance.get<User>();
 
   @override
   void initState() {
@@ -43,10 +46,16 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       'Logout': {
         'icon': Symbols.logout,
-        'onPressed': () {
-          Navigator.of(context).pushNamed(
-            '/auth',
-          );
+        'onPressed': () async {
+          await user.logout().then((success) {
+            if (success) {
+              if (!mounted) return;
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/home',
+                (route) => false,
+              );
+            }
+          });
         }
       },
     };
@@ -74,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'username1234',
+                      user.username ?? '',
                       style: TextStyle(
                         color: AppColors.primary,
                       ),

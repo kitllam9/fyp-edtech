@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/service/auth.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
@@ -34,6 +35,11 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   final _registerFormKey = GlobalKey<FormState>();
   final _loginFormKey = GlobalKey<FormState>();
   bool _submitValidate = true;
+
+  Map<AuthMode, Map<String, dynamic>?> errors = {
+    AuthMode.login: null,
+    AuthMode.register: null,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +133,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                           MainTextFormField(
                             controller: _usernameController[AuthMode.login]!,
                             validator: (value) {
+                              if (errors[AuthMode.login]?['username'] != null) {
+                                return errors[AuthMode.login]?['username'][0];
+                              }
                               if (value == null || value.isEmpty) {
                                 return 'Username cannot be empty.';
                               }
@@ -166,6 +175,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                               ),
                             ),
                             validator: (value) {
+                              if (errors[AuthMode.login]?['password'] != null) {
+                                return errors[AuthMode.login]?['password'][0];
+                              }
                               if (value == null || value.isEmpty) {
                                 return 'Password cannot be empty.';
                               }
@@ -197,11 +209,26 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconTextButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  setState(() {
+                                    errors[AuthMode.login] = null;
+                                  });
                                   if (!_loginFormKey.currentState!.validate()) {
                                     return;
                                   }
-                                  Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                                  await Auth.login(
+                                    username: _usernameController[AuthMode.login]!.text,
+                                    password: _pwdController[AuthMode.login]!.text,
+                                  ).then((res) {
+                                    if (res?.success ?? false) {
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                                    } else {
+                                      setState(() {
+                                        errors[AuthMode.login] = res?.errors;
+                                      });
+                                    }
+                                  });
                                 },
                                 backgroundColor: AppColors.primary,
                                 width: Globals.screenWidth! * 0.55,
@@ -242,6 +269,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                           MainTextFormField(
                             controller: _usernameController[AuthMode.register]!,
                             validator: (value) {
+                              if (errors[AuthMode.register]?['username'] != null) {
+                                return errors[AuthMode.register]?['username'][0];
+                              }
                               if (value == null || value.length < 6 || value.length > 12) {
                                 return 'Username must consist of 6-12 characters.';
                               }
@@ -264,6 +294,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                           MainTextFormField(
                             controller: _emailController,
                             validator: (value) {
+                              if (errors[AuthMode.register]?['email'] != null) {
+                                return errors[AuthMode.register]?['email'][0];
+                              }
                               if (value == null || !EmailValidator.validate(value)) {
                                 return 'Invalid email address.';
                               }
@@ -308,6 +341,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                               // validate
                             }),
                             validator: (value) {
+                              if (errors[AuthMode.register]?['password'] != null) {
+                                return errors[AuthMode.register]?['password'][0];
+                              }
                               if (value == null ||
                                   value.isEmpty ||
                                   value.length < 8 ||
@@ -418,11 +454,27 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconTextButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  setState(() {
+                                    errors[AuthMode.register] = null;
+                                  });
                                   if (!_registerFormKey.currentState!.validate()) {
                                     return;
                                   }
-                                  Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                                  await Auth.register(
+                                    username: _usernameController[AuthMode.register]!.text,
+                                    email: _emailController.text,
+                                    password: _pwdController[AuthMode.register]!.text,
+                                  ).then((res) {
+                                    if (res?.success ?? false) {
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                                    } else {
+                                      setState(() {
+                                        errors[AuthMode.register] = res?.errors;
+                                      });
+                                    }
+                                  });
                                 },
                                 backgroundColor: AppColors.primary,
                                 width: Globals.screenWidth! * 0.55,

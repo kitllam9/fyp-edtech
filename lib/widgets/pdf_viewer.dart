@@ -57,14 +57,19 @@ class _PDFViewerState extends State<PDFViewer> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) => generalDialog(
-        icon: Symbols.help,
-        title: 'Are you sure?',
-        msg: 'Do you really want to exit? All your unsaved progress will be lost.',
-        onConfirmed: () => Navigator.of(context).popUntil(
-          (route) => route.isFirst || route.settings.name == '/bookmark',
-        ),
-      ),
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        generalDialog(
+          icon: Symbols.help,
+          title: 'Are you sure?',
+          msg: 'Do you really want to exit? All your unsaved progress will be lost.',
+          onConfirmed: () => Navigator.of(context).popUntil(
+            (route) => route.isFirst || route.settings.name == '/bookmark',
+          ),
+        );
+      },
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: AnimatedContainer(

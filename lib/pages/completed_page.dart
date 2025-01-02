@@ -3,12 +3,10 @@ import 'dart:typed_data';
 
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:fyp_edtech/main.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/file_io.dart';
 import 'package:fyp_edtech/utils/globals.dart';
-import 'package:fyp_edtech/utils/misc.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -85,10 +83,10 @@ class _CompletedPageState extends State<CompletedPage> {
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (_targetValue >= _totalPoints) {
-        await Future.delayed(Duration(milliseconds: 350));
+        await Future.delayed(Duration(milliseconds: 450));
         if (!mounted) return;
         ElegantNotification(
-          toastDuration: Duration(seconds: 5),
+          toastDuration: Duration(seconds: 7),
           animationDuration: Duration(seconds: 1),
           animationCurve: Curves.easeInOut,
           title: Text(
@@ -130,8 +128,7 @@ class _CompletedPageState extends State<CompletedPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height:
-                    widget.type == CompletedType.article ? Globals.screenHeight! * 0.25 : Globals.screenHeight! * 0.2,
+                height: widget.type == CompletedType.article ? Globals.screenHeight! * 0.25 : Globals.screenHeight! * 0.2,
               ),
               if (widget.type == CompletedType.article)
                 Text(
@@ -201,7 +198,7 @@ class _CompletedPageState extends State<CompletedPage> {
                     child: Row(
                       children: [
                         Text(
-                          '(${(_targetValue % _totalPoints == 0 ? _totalPoints : _targetValue % _totalPoints).toStringAsFixed(0)} points until the next badge)',
+                          '(${(_targetValue % _totalPoints == 0 ? _totalPoints : _totalPoints - (_targetValue % _totalPoints)).toStringAsFixed(0)} points until the next badge)',
                           style: TextStyle(
                             color: AppColors.primary,
                           ),

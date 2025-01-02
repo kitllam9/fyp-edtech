@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:requests/requests.dart';
 
 class Api {
-  bool isTiming = false;
-
-  Api({String? host, this.pathPrefix = ''}) {
+  Api({String? host, this.pathPrefix = '/api'}) {
     if (host != null) this.host = host;
   }
 
@@ -23,7 +21,7 @@ class Api {
   final String pathPrefix;
 
   User user = GetIt.instance.get<User>();
-  String host = 'google.com';
+  String host = dotenv.env['API_DEV']!;
 
   Future<ApiResponse>? get({
     required String path,
@@ -112,43 +110,35 @@ class Api {
     Map<String, dynamic>? queries,
     Map<String, dynamic>? payload,
   }) async {
-    var uri = Uri.https(host, pathPrefix + path, queries);
+    var uri = Uri.http('10.0.2.2:8000', pathPrefix + path, queries);
     late Future<http.Response> request;
 
     switch (method.toLowerCase()) {
       case 'get':
-        request = Requests.get(
-          uri.toString(),
+        request = http.get(
+          uri,
           headers: headers ?? defaultHeaders,
-          bodyEncoding: RequestBodyEncoding.JSON,
-          timeoutSeconds: 60,
         );
         break;
       case 'post':
-        request = Requests.post(
-          uri.toString(),
-          body: payload,
-          bodyEncoding: RequestBodyEncoding.JSON,
+        request = http.post(
+          uri,
+          body: jsonEncode(payload),
           headers: headers ?? defaultHeaders,
-          timeoutSeconds: 60,
         );
         break;
       case 'put':
-        request = Requests.put(
-          uri.toString(),
+        request = http.put(
+          uri,
           body: payload,
-          bodyEncoding: RequestBodyEncoding.JSON,
           headers: headers ?? defaultHeaders,
-          timeoutSeconds: 60,
         );
         break;
       case 'delete':
-        request = Requests.delete(
-          uri.toString(),
+        request = http.delete(
+          uri,
           body: payload,
-          bodyEncoding: RequestBodyEncoding.JSON,
           headers: headers ?? defaultHeaders,
-          timeoutSeconds: 60,
         );
         break;
       default:
@@ -157,34 +147,18 @@ class Api {
 
     return request.then(
       (response) {
-        if (response.contentType != null && response.contentType!.contains('application/json')) {
-          isTiming = false;
-          var apiResponse = ApiResponse.fromJson(
-            response.json() as Map<String, dynamic>,
-            ResponseInfo.fromResponse(response),
-          );
+        var apiResponse = ApiResponse.fromJson(
+          json.decode(response.body),
+          ResponseInfo.fromResponse(response),
+        );
 
-          if (!apiResponse.success) {
-            // if (apiResponse.data?['errors'] != null) {
-            //   final validationErrors = apiResponse.validationErrors();
-            //   final errorMessages = validationErrors.values
-            //       .map(
-            //         (errorList) => errorList.join(', '),
-            //       )
-            //       .join(
-            //         '\n>\t',
-            //       );
-            // }
-          }
-          return apiResponse;
-        }
+        return apiResponse;
 
-        throw UnsupportedError('Response content type \'${response.contentType}\' is not supported'
-            'with the request: ${response.request}');
+        // throw UnsupportedError('Response content type \'${response.contentType}\' is not supported'
+        //     'with the request: ${response.request}');
       },
     ).onError((error, stackTrace) {
-      isTiming = false;
-      throw error as Exception;
+      throw error as Error;
     });
   }
 }
@@ -194,18 +168,21 @@ class ApiResponse {
     required this.success,
     required this.message,
     this.data,
+    this.errors,
     required this.details,
   });
 
   ApiResponse.fromJson(Map<String, dynamic> json, this.details) {
     success = json['success'];
-    message = json['message'];
+    message = json['message'] ?? '';
     data = json['data'];
+    errors = json['errors'];
   }
 
   late bool success;
   late String message;
   Map<String, dynamic>? data = {};
+  Map<String, dynamic>? errors = {};
   late ResponseInfo details;
 
   Map<String, dynamic> toJson() {
@@ -215,10 +192,6 @@ class ApiResponse {
       'data': json.encode(data),
       'responseDetails': details.toJson(),
     };
-  }
-
-  Map<String, dynamic> validationErrors() {
-    return data?['errors'] ?? {};
   }
 
   @override

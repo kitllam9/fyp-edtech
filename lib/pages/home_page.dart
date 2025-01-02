@@ -10,6 +10,7 @@ import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/widgets/pdf_viewer.dart';
 import 'package:fyp_edtech/widgets/placeholder.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -68,7 +69,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   )
                 : GenericButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      // var url = 'http://10.0.2.2:8000/test';
+                      // var response = await http.get(Uri.parse(url));
+                      // print(response.body);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

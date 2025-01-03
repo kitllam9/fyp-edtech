@@ -110,7 +110,7 @@ class Api {
     Map<String, dynamic>? queries,
     Map<String, dynamic>? payload,
   }) async {
-    var uri = Uri.http('10.0.2.2:8000', pathPrefix + path, queries);
+    var uri = Uri.http(host, pathPrefix + path, queries);
     late Future<http.Response> request;
 
     switch (method.toLowerCase()) {
@@ -153,9 +153,6 @@ class Api {
         );
 
         return apiResponse;
-
-        // throw UnsupportedError('Response content type \'${response.contentType}\' is not supported'
-        //     'with the request: ${response.request}');
       },
     ).onError((error, stackTrace) {
       throw error as Error;
@@ -164,6 +161,12 @@ class Api {
 }
 
 class ApiResponse {
+  late bool success;
+  late String message;
+  Map<String, dynamic>? data = {};
+  Map<String, dynamic>? errors = {};
+  late ResponseInfo details;
+
   ApiResponse({
     required this.success,
     required this.message,
@@ -178,12 +181,6 @@ class ApiResponse {
     data = json['data'];
     errors = json['errors'];
   }
-
-  late bool success;
-  late String message;
-  Map<String, dynamic>? data = {};
-  Map<String, dynamic>? errors = {};
-  late ResponseInfo details;
 
   Map<String, dynamic> toJson() {
     return {

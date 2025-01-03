@@ -50,6 +50,8 @@ dependencies:
   elegant_notification: ^2.3.0
   syncfusion_flutter_pdfviewer: ^27.2.5
   syncfusion_flutter_core: ^27.2.5
+  loader_overlay: ^4.0.4+1
+  flutter_spinkit: ^5.2.1
 
 dev_dependencies:
   flutter_test:

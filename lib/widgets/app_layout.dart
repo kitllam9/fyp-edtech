@@ -93,6 +93,7 @@ class _AppLayoutState extends State<AppLayout> {
           ],
           onTap: (value) {
             if (value == 4) {
+              print(GetIt.instance.get<User>().token);
               if (!GetIt.instance.get<User>().loggedIn) {
                 Navigator.of(context).pushNamed('/auth');
               } else {

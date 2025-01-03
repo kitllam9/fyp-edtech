@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fyp_edtech/config/routes.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
@@ -9,14 +10,17 @@ import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final GetIt getIt = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  GetIt.instance.registerSingleton<User>(User());
-  GetIt.instance.registerSingleton<SharedPreferences>(await LocalStorage.prefs);
+  getIt.registerSingleton<User>(User());
+  getIt.registerSingleton<SharedPreferences>(await LocalStorage.prefs);
 
   final SharedPreferences prefs = await LocalStorage.prefs;
   String? appSettingBrightness = prefs.getString('brightness');
@@ -44,16 +48,24 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const MainApp(),
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.scaffold,
-        textTheme: GoogleFonts.notoSansTextTheme(),
+    return GlobalLoaderOverlay(
+      overlayWidgetBuilder: (progress) => Center(
+        child: SpinKitSquareCircle(
+          color: AppColors.primary,
+          size: 50.0,
+        ),
       ),
-      routes: routes,
-      navigatorKey: navigatorKey,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: const MainApp(),
+        theme: ThemeData(
+          useMaterial3: true,
+          scaffoldBackgroundColor: AppColors.scaffold,
+          textTheme: GoogleFonts.notoSansTextTheme(),
+        ),
+        routes: routes,
+        navigatorKey: navigatorKey,
+      ),
     );
   }
 }
@@ -70,6 +82,18 @@ class _MainAppState extends State<MainApp> {
     Globals.screenWidth = MediaQuery.of(context).size.width;
     Globals.screenHeight = MediaQuery.of(context).size.height;
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final User user = getIt.get<User>();
+      user.token = GetIt.instance.get<SharedPreferences>().getString('token');
+      if (user.loggedIn) {
+        await user.getUserData();
+      }
+    });
+    super.initState();
   }
 
   @override

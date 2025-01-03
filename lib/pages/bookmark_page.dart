@@ -27,7 +27,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => PDFViewer(
-                    pdfAssetPath: 'assets/sample.pdf',
+                    pdfPath: 'assets/sample.pdf',
                   ),
                 ),
               );

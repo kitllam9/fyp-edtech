@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fyp_edtech/service/auth.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
+import 'package:fyp_edtech/utils/misc.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/widgets/text_form_field.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 enum AuthMode { login, register }
@@ -210,18 +212,21 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                             children: [
                               IconTextButton(
                                 onPressed: () async {
+                                  closeKeyboard();
                                   setState(() {
                                     errors[AuthMode.login] = null;
                                   });
                                   if (!_loginFormKey.currentState!.validate()) {
                                     return;
                                   }
+                                  context.loaderOverlay.show();
                                   await Auth.login(
                                     username: _usernameController[AuthMode.login]!.text,
                                     password: _pwdController[AuthMode.login]!.text,
                                   ).then((res) {
+                                    if (!context.mounted) return;
+                                    context.loaderOverlay.hide();
                                     if (res?.success ?? false) {
-                                      if (!context.mounted) return;
                                       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
                                     } else {
                                       setState(() {

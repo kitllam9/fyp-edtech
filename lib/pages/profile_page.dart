@@ -4,6 +4,7 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:get_it/get_it.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -47,9 +48,11 @@ class _ProfilePageState extends State<ProfilePage> {
       'Logout': {
         'icon': Symbols.logout,
         'onPressed': () async {
+          context.loaderOverlay.show();
           await user.logout().then((success) {
             if (success) {
               if (!mounted) return;
+              context.loaderOverlay.hide();
               Navigator.of(context).pushNamedAndRemoveUntil(
                 '/home',
                 (route) => false,

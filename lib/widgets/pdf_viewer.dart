@@ -11,8 +11,8 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 class PDFViewer extends StatefulWidget {
-  final String pdfAssetPath;
-  const PDFViewer({super.key, required this.pdfAssetPath});
+  final String pdfPath;
+  const PDFViewer({super.key, required this.pdfPath});
 
   @override
   State<PDFViewer> createState() => _PDFViewerState();
@@ -142,8 +142,8 @@ class _PDFViewerState extends State<PDFViewer> {
                   backgroundColor: AppColors.scaffold,
                   progressBarColor: AppColors.primary,
                 ),
-                child: SfPdfViewer.asset(
-                  widget.pdfAssetPath,
+                child: SfPdfViewer.network(
+                  widget.pdfPath,
                   controller: _pdfViewController,
                   scrollDirection: PdfScrollDirection.horizontal,
                   canShowScrollHead: false,

@@ -22,4 +22,14 @@ class User {
       return false;
     }
   }
+
+  Future<void> getUserData() async {
+    var res = await Api().get(
+      path: '/user',
+    );
+    if (res?.success ?? false) {
+      username = res!.data!['username'];
+      email = res.data!['email'];
+    }
+  }
 }

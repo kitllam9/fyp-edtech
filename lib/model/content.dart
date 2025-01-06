@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fyp_edtech/model/paginated_data.dart';
 import 'package:fyp_edtech/service/api.dart';
 
@@ -40,33 +39,13 @@ class Content {
   });
 
   static Content fromJson(Map<String, dynamic> json) {
-    String? originalUrl = json['pdf_url'];
-    String? newUrl;
-    if (originalUrl != null) {
-      String newHost = '10.0.2.2:8000';
-      // String newHost = dotenv.get('API_DEV');
-
-      Uri originalUri = Uri.parse(originalUrl);
-      String path = originalUri.path;
-      String query = originalUri.query;
-      String fragment = originalUri.fragment;
-
-      // Create a new URL with the IPv4 address as the host
-      newUrl = 'http://$newHost$path';
-      if (query.isNotEmpty) {
-        newUrl += '?$query';
-      }
-      if (fragment.isNotEmpty) {
-        newUrl += '#$fragment';
-      }
-    }
-
     return Content(
       id: json['id'],
       title: json['title'],
       description: json['description'],
       type: ContentType.fromString(json['type']),
-      pdfUrl: newUrl,
+      pdfUrl: json['pdf_url'],
+      exerciseDetails: json['exercise_details'] != null ? jsonDecode(json['exercise_details']).cast<Map<String, dynamic>>() : null,
       tags: jsonDecode(json['tags']),
     );
   }

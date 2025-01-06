@@ -3,7 +3,6 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/widgets/appbar.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
-import 'package:fyp_edtech/widgets/pdf_viewer.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
@@ -24,13 +23,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
           margin: EdgeInsets.all(5),
           child: GenericButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => PDFViewer(
-                    pdfPath: 'assets/sample.pdf',
-                  ),
-                ),
-              );
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => PDFViewer(
+              //       pdfPath: 'assets/sample.pdf',
+              //     ),
+              //   ),
+              // );
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),

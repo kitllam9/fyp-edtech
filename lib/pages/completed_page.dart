@@ -37,48 +37,50 @@ class _CompletedPageState extends State<CompletedPage> {
   bool _initDisplay = true;
 
   void ratioVal() async {
-    if (ratio == 0) {
-      setState(() {
-        ratio = _currentValue / _totalPoints;
-      });
-      if (ratio == _currentValue / _totalPoints) {
-        Future.delayed(Duration(milliseconds: 500), () {
-          setState(() {
-            _initDisplay = false;
-            if (_targetValue / _totalPoints >= 1) {
-              ratio = 1;
-            } else {
-              ratio = _targetValue / _totalPoints;
-            }
-          });
-          if (_targetValue / _totalPoints >= 1 && ratio == 1) {
-            Future.delayed(Duration(milliseconds: 500), () {
-              setState(() {
-                ratio = 0;
-              });
-              if (ratio == 0) {
-                Future.delayed(Duration(milliseconds: 500), () {
-                  setState(() {
-                    ratio = (_targetValue - _totalPoints) / _totalPoints;
-                  });
-                  if (ratio == (_targetValue - _totalPoints) / _totalPoints) {
-                    Future.delayed(Duration(milliseconds: 500), () {
-                      setState(() {
-                        _progressAnimationFinished = true;
-                      });
-                    });
-                  }
-                });
+    if (mounted) {
+      if (ratio == 0) {
+        setState(() {
+          ratio = _currentValue / _totalPoints;
+        });
+        if (ratio == _currentValue / _totalPoints) {
+          Future.delayed(Duration(milliseconds: 500), () {
+            setState(() {
+              _initDisplay = false;
+              if (_targetValue / _totalPoints >= 1) {
+                ratio = 1;
+              } else {
+                ratio = _targetValue / _totalPoints;
               }
             });
-          } else {
-            Future.delayed(Duration(milliseconds: 500), () {
-              setState(() {
-                _progressAnimationFinished = true;
+            if (_targetValue / _totalPoints >= 1 && ratio == 1) {
+              Future.delayed(Duration(milliseconds: 500), () {
+                setState(() {
+                  ratio = 0;
+                });
+                if (ratio == 0) {
+                  Future.delayed(Duration(milliseconds: 500), () {
+                    setState(() {
+                      ratio = (_targetValue - _totalPoints) / _totalPoints;
+                    });
+                    if (ratio == (_targetValue - _totalPoints) / _totalPoints) {
+                      Future.delayed(Duration(milliseconds: 500), () {
+                        setState(() {
+                          _progressAnimationFinished = true;
+                        });
+                      });
+                    }
+                  });
+                }
               });
-            });
-          }
-        });
+            } else {
+              Future.delayed(Duration(milliseconds: 500), () {
+                setState(() {
+                  _progressAnimationFinished = true;
+                });
+              });
+            }
+          });
+        }
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {

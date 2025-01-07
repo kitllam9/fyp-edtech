@@ -92,7 +92,9 @@ class _HomePageState extends State<HomePage> {
                                 ? CustomPDFViewer(
                                     file: file,
                                   )
-                                : ExercisePage(),
+                                : ExercisePage(
+                                    questions: content.exerciseDetails ?? [],
+                                  ),
                           ),
                         );
                       },

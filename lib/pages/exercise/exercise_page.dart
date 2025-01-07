@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/model/question.dart';
 import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/pages/exercise/multiple_choice.dart';
 import 'package:fyp_edtech/pages/exercise/short_question.dart';
@@ -9,7 +10,11 @@ import 'package:fyp_edtech/styles/dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ExercisePage extends StatefulWidget {
-  const ExercisePage({super.key});
+  final List<Question> questions;
+  const ExercisePage({
+    super.key,
+    required this.questions,
+  });
 
   @override
   State<ExercisePage> createState() => _ExercisePageState();
@@ -17,7 +22,15 @@ class ExercisePage extends StatefulWidget {
 
 class _ExercisePageState extends State<ExercisePage> {
   int _currentPage = 1;
-  final int _total = 5;
+  Question? _currentQuestion;
+  int? _total;
+
+  @override
+  void initState() {
+    _total = widget.questions.length;
+    _currentQuestion = widget.questions[_currentPage];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +104,7 @@ class _ExercisePageState extends State<ExercisePage> {
                 } else {
                   setState(() {
                     _currentPage = _currentPage + 1;
+                    _currentQuestion = widget.questions[_currentPage - 1];
                   });
                 }
               },
@@ -101,24 +115,27 @@ class _ExercisePageState extends State<ExercisePage> {
       body: SafeArea(
         child: Stack(
           children: [
-            _currentPage.isEven
+            _currentQuestion?.type == QuestionType.mc
                 ? MultipleChoice(
+                    key: ValueKey(DateTime.now()),
                     question: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Question',
-                          style: TextStyle(
-                            color: AppColors.primary,
+                        Expanded(
+                          child: Text(
+                            _currentQuestion?.question ?? '',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     choices: {
-                      'A': '12323',
-                      'B': '12323',
-                      'C': '12323',
-                      'D': '12323',
+                      'A': _currentQuestion?.choices?[0],
+                      'B': _currentQuestion?.choices?[1],
+                      'C': _currentQuestion?.choices?[2],
+                      'D': _currentQuestion?.choices?[3],
                     },
                   )
                 : ShortQuestion(
@@ -126,7 +143,7 @@ class _ExercisePageState extends State<ExercisePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Question',
+                          _currentQuestion?.question ?? '',
                           style: TextStyle(
                             color: AppColors.primary,
                           ),
@@ -138,7 +155,7 @@ class _ExercisePageState extends State<ExercisePage> {
               duration: Duration(milliseconds: 300),
               curve: Curves.fastOutSlowIn,
               height: 2,
-              width: Globals.screenWidth! * (_currentPage / _total),
+              width: _total != null ? Globals.screenWidth! * (_currentPage / _total!) : 0,
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(5),

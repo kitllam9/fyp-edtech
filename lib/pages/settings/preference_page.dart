@@ -76,7 +76,6 @@ class _PreferencePageState extends State<PreferencePage> {
                         Globals.darkMode = brightness == Brightness.dark;
                         Globals.brightness = AppBrightness.system;
                         break;
-                      default:
                     }
                     if (Platform.isAndroid) {
                       Restart.restartApp();

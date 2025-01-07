@@ -29,7 +29,8 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      doc = await PDFDocument.fromFile(widget.file!);
+      doc = await PDFDocument.fromURL('https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=1f2ee3831eebfc97bfafd514ca2abb7e2c5c86bb');
+      // doc = await PDFDocument.fromFile(widget.file!);
       _total = doc?.count;
       setState(() {});
     });
@@ -121,11 +122,12 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   controller: _pdfViewController,
                   onPageChanged: (value) {
                     setState(() {
-                      _currentPage = value;
+                      _currentPage = value + 1;
                     });
                   },
                   showIndicator: false,
                   showPicker: false,
+                  backgroundColor: AppColors.scaffold,
                   navigationBuilder: (context, pageNumber, totalPages, jumpToPage, animateToPage) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
@@ -206,10 +208,10 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.fastOutSlowIn,
-                  height: 2,
-                  width: Globals.screenWidth! * ((_currentPage + 1) / _total!),
+                  height: 4,
+                  width: Globals.screenWidth! * (_currentPage / _total!),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.text,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),

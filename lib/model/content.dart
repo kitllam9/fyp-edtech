@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fyp_edtech/model/paginated_data.dart';
+import 'package:fyp_edtech/model/question.dart';
 import 'package:fyp_edtech/service/api.dart';
 
 enum ContentType {
@@ -25,7 +26,7 @@ class Content {
   final String description;
   final ContentType type;
   final String? pdfUrl;
-  final List<Map<String, dynamic>>? exerciseDetails;
+  final List<Question>? exerciseDetails;
   final List<dynamic> tags;
 
   Content({
@@ -45,7 +46,9 @@ class Content {
       description: json['description'],
       type: ContentType.fromString(json['type']),
       pdfUrl: json['pdf_url'],
-      exerciseDetails: json['exercise_details'] != null ? jsonDecode(json['exercise_details']).cast<Map<String, dynamic>>() : null,
+      exerciseDetails: json['exercise_details'] != null
+          ? [for (var q in jsonDecode(json['exercise_details']).cast<Map<String, dynamic>>()) Question.fromJson(q)]
+          : null,
       tags: jsonDecode(json['tags']),
     );
   }

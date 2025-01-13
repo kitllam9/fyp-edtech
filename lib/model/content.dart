@@ -63,4 +63,9 @@ class Content {
     }
     return null;
   }
+
+  static Future<bool> complete(int id) async {
+    var res = await Api().get(path: '/content/complete/$id');
+    return res?.success ?? false;
+  }
 }

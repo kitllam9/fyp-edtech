@@ -10,10 +10,12 @@ import 'package:fyp_edtech/styles/dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ExercisePage extends StatefulWidget {
+  final int id;
   final List<Question> questions;
   const ExercisePage({
     super.key,
     required this.questions,
+    required this.id,
   });
 
   @override
@@ -97,6 +99,7 @@ class _ExercisePageState extends State<ExercisePage> {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => CompletedPage(
+                        contentId: widget.id,
                         type: CompletedType.exercise,
                       ),
                     ),

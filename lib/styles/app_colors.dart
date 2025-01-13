@@ -5,7 +5,7 @@ class AppColors {
   static final Color _text = Color(0xFF767676);
   static final Color _primary = Color(0xFF0F0F0F);
   static final Color _secondary = Colors.white;
-  static final Color _unselected = Color(0xFFB1B1B1);
+  static final Color _unselected = Color(0xFF8E8E8E);
   static final Color _scaffold = Color.fromARGB(255, 248, 248, 248);
   static final Color _error = Color(0xFFB00020);
   static final Color _success = Color(0xFF43A047);

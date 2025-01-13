@@ -110,6 +110,7 @@ class _StatsPageState extends State<StatsPage> {
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => CompletedPage(
+                          contentId: 1,
                           type: CompletedType.quest,
                         ),
                       ),

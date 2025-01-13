@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/model/paginated_data.dart';
 import 'package:fyp_edtech/pages/exercise/exercise_page.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
-import 'package:fyp_edtech/utils/file_io.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
@@ -76,23 +73,15 @@ class _HomePageState extends State<HomePage> {
                     )
                   : GenericButton(
                       onPressed: () async {
-                        context.loaderOverlay.show();
-                        File? file;
-                        await getPdf(content!.id).then((fileContent) async {
-                          setState(() {
-                            file = fileContent;
-                          });
-                        });
-                        if (!context.mounted) return;
-                        context.loaderOverlay.hide();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => content.type == ContentType.notes
+                            builder: (context) => content?.type == ContentType.notes
                                 ? CustomPDFViewer(
-                                    file: file,
+                                    id: content!.id,
                                   )
                                 : ExercisePage(
+                                    id: content!.id,
                                     questions: content.exerciseDetails ?? [],
                                   ),
                           ),

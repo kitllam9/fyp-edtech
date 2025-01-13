@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/file_io.dart';
@@ -13,14 +14,19 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 
 enum CompletedType {
-  article,
+  notes,
   exercise,
   quest,
 }
 
 class CompletedPage extends StatefulWidget {
   final CompletedType type;
-  const CompletedPage({super.key, required this.type});
+  final int contentId;
+  const CompletedPage({
+    super.key,
+    required this.type,
+    required this.contentId,
+  });
 
   @override
   State<CompletedPage> createState() => _CompletedPageState();
@@ -116,6 +122,9 @@ class _CompletedPageState extends State<CompletedPage> {
   @override
   void initState() {
     ratioVal();
+    if (widget.type == CompletedType.notes || widget.type == CompletedType.exercise) {
+      Content.complete(widget.contentId);
+    }
     super.initState();
   }
 
@@ -130,9 +139,9 @@ class _CompletedPageState extends State<CompletedPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: widget.type == CompletedType.article ? Globals.screenHeight! * 0.25 : Globals.screenHeight! * 0.2,
+                height: widget.type == CompletedType.notes ? Globals.screenHeight! * 0.25 : Globals.screenHeight! * 0.2,
               ),
-              if (widget.type == CompletedType.article)
+              if (widget.type == CompletedType.notes)
                 Text(
                   'You\'ve completed a reading!',
                   style: TextStyle(
@@ -235,7 +244,7 @@ class _CompletedPageState extends State<CompletedPage> {
                   if (widget.type != CompletedType.quest)
                     IconTextButton(
                       onPressed: () async {
-                        if (widget.type == CompletedType.article) {
+                        if (widget.type == CompletedType.notes) {
                           File file = await getFileFromAssets('sample.pdf');
                           Uint8List bytes = file.readAsBytesSync();
 
@@ -258,11 +267,11 @@ class _CompletedPageState extends State<CompletedPage> {
                       width: Globals.screenWidth! * 0.8,
                       height: 35,
                       icon: Icon(
-                        widget.type == CompletedType.article ? Symbols.download : Symbols.insights,
+                        widget.type == CompletedType.notes ? Symbols.download : Symbols.insights,
                         color: AppColors.secondary,
                       ),
                       text: Text(
-                        widget.type == CompletedType.article ? 'Save' : 'Review Your Results',
+                        widget.type == CompletedType.notes ? 'Save' : 'Review Your Results',
                         style: TextStyle(
                           color: AppColors.secondary,
                         ),

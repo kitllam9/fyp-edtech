@@ -1,19 +1,20 @@
-import 'dart:io';
 
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/styles/dialog.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CustomPDFViewer extends StatefulWidget {
-  final File? file;
+  final int id;
   const CustomPDFViewer({
     super.key,
-    this.file,
+    required this.id,
   });
 
   @override
@@ -28,11 +29,13 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
 
   @override
   void initState() {
+    context.loaderOverlay.show();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      doc = await PDFDocument.fromURL('https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=1f2ee3831eebfc97bfafd514ca2abb7e2c5c86bb');
-      // doc = await PDFDocument.fromFile(widget.file!);
+      doc = await PDFDocument.fromURL('http://${dotenv.get('API_DEV')}/api/content/get-pdf/${widget.id}');
+      // doc = await PDFDocument.fromURL('https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=1f2ee3831eebfc97bfafd514ca2abb7e2c5c86bb');
       _total = doc?.count;
       setState(() {});
+      if (mounted) context.loaderOverlay.hide();
     });
     super.initState();
   }
@@ -79,7 +82,8 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => CompletedPage(
-                          type: CompletedType.article,
+                          contentId: widget.id,
+                          type: CompletedType.notes,
                         ),
                       ),
                     );
@@ -141,8 +145,9 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.first_page,
-                                    color: AppColors.secondary,
                                   ),
+                                  disabledColor: AppColors.unselected,
+                                  color: AppColors.secondary,
                                   onPressed: pageNumber == 1
                                       ? null
                                       : () {
@@ -154,13 +159,15 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.chevron_left,
-                                    color: AppColors.secondary,
                                   ),
+                                  disabledColor: AppColors.unselected,
+                                  color: AppColors.secondary,
                                   onPressed: pageNumber == 1
                                       ? null
                                       : () {
                                           int page = pageNumber! - 2;
-                                          if (1 > page) {
+                                          // print(page);
+                                          if (0 > page) {
                                             page = 1;
                                           }
                                           animateToPage(page: page);
@@ -171,8 +178,9 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.chevron_right,
-                                    color: AppColors.secondary,
                                   ),
+                                  disabledColor: AppColors.unselected,
+                                  color: AppColors.secondary,
                                   onPressed: pageNumber == doc!.count
                                       ? null
                                       : () {
@@ -188,8 +196,9 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.last_page,
-                                    color: AppColors.secondary,
                                   ),
+                                  disabledColor: AppColors.unselected,
+                                  color: AppColors.secondary,
                                   onPressed: pageNumber == doc!.count
                                       ? null
                                       : () {

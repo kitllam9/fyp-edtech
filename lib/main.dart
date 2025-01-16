@@ -11,6 +11,7 @@ import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -55,16 +56,35 @@ class _MyAppState extends State<MyApp> {
           size: 50.0,
         ),
       ),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const MainApp(),
-        theme: ThemeData(
-          useMaterial3: true,
-          scaffoldBackgroundColor: AppColors.scaffold,
-          textTheme: GoogleFonts.notoSansTextTheme(),
+      child: RefreshConfiguration(
+        headerBuilder: () => WaterDropHeader(),
+        footerBuilder: () => ClassicFooter(
+          loadStyle: LoadStyle.ShowWhenLoading,
+          noDataText: 'You\'ve reached the end.',
+          textStyle: TextStyle(color: AppColors.text),
+          loadingText: '',
+          loadingIcon: SpinKitSquareCircle(
+            color: AppColors.primary,
+            size: 25.0,
+          ),
         ),
-        routes: routes,
-        navigatorKey: navigatorKey,
+        headerTriggerDistance: 80.0,
+        maxOverScrollExtent: 100,
+        maxUnderScrollExtent: 0,
+        enableScrollWhenRefreshCompleted: true,
+        enableLoadingWhenFailed: true,
+        hideFooterWhenNotFull: false,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const MainApp(),
+          theme: ThemeData(
+            useMaterial3: true,
+            scaffoldBackgroundColor: AppColors.scaffold,
+            textTheme: GoogleFonts.notoSansTextTheme(),
+          ),
+          routes: routes,
+          navigatorKey: navigatorKey,
+        ),
       ),
     );
   }

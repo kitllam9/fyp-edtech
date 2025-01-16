@@ -7,9 +7,9 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
+import 'package:fyp_edtech/widgets/custom_shimmer_loader.dart';
 import 'package:fyp_edtech/widgets/pdf_viewer.dart';
-import 'package:fyp_edtech/widgets/placeholder.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,100 +19,123 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isLoading = true;
-  PaginatedData<Content>? contentList;
+  bool init = true;
+  bool _noMore = false;
+  int _page = 1;
+  List<Content> contentList = [];
+
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+
+  Future<void> _fetchPage() async {
+    await Future.delayed(Durations.long4);
+    try {
+      PaginatedData<Content>? response = await Content.fetchContent(page: _page);
+      List<Content>? content = response?.data;
+      if (content!.isEmpty) {
+        _refreshController.loadNoData();
+      } else {
+        setState(() {
+          _page++;
+          contentList.addAll(content);
+          _refreshController.loadComplete();
+        });
+      }
+    } catch (error) {
+      //
+    }
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      contentList.clear();
+      _page = 1;
+    });
+    await _fetchPage();
+    _refreshController.refreshCompleted(resetFooterState: true);
+  }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Content.fetchContent().then((val) {
-        if (mounted) {
-          setState(() {
-            contentList = val;
-            _isLoading = false;
-          });
-        }
+      await _fetchPage().then((_) {
+        setState(() {
+          init = false;
+        });
       });
     });
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MasonryGridView.builder(
-      physics: _isLoading ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
-      itemCount: _isLoading ? 6 : contentList?.data.length,
-      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-      itemBuilder: (context, index) {
-        Content? content = contentList?.data[index];
-        return Box(
-          margin: EdgeInsets.all(5),
-          child: SizedBox(
-            width: Globals.screenWidth! * 0.42,
-            height: _isLoading ? 250 : null,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _isLoading
-                  ? Shimmer.fromColors(
-                      baseColor: AppColors.shimmerBase,
-                      highlightColor: AppColors.shimmerHighlight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TitlePlaceholder(
-                            height: 24,
-                          ),
-                          SizedBox(
-                            height: 18,
-                          ),
-                          ContentPlaceholder(
-                            lines: 3,
-                          ),
-                        ],
-                      ),
-                    )
-                  : GenericButton(
-                      onPressed: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => content?.type == ContentType.notes
-                                ? CustomPDFViewer(
-                                    id: content!.id,
-                                  )
-                                : ExercisePage(
-                                    id: content!.id,
-                                    questions: content.exerciseDetails ?? [],
-                                  ),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            content?.title ?? '',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.primary,
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      onRefresh: _refresh,
+      onLoading: _fetchPage,
+      controller: _refreshController,
+      child: init || _refreshController.headerStatus == RefreshStatus.refreshing
+          ? CustomShimmmerLoader()
+          : MasonryGridView.count(
+              crossAxisCount: 2,
+              itemCount: contentList.length,
+              itemBuilder: (context, index) {
+                Content? content = contentList[index];
+                return Box(
+                  margin: EdgeInsets.all(5),
+                  child: SizedBox(
+                    width: Globals.screenWidth! * 0.42,
+                    height: init ? 250 : null,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GenericButton(
+                        onPressed: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => content.type == ContentType.notes
+                                  ? CustomPDFViewer(
+                                      id: content.id,
+                                    )
+                                  : ExercisePage(
+                                      id: content.id,
+                                      questions: content.exerciseDetails ?? [],
+                                    ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            content?.description ?? '',
-                            style: TextStyle(
-                              color: AppColors.text,
+                          );
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              content.title,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: AppColors.primary,
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              content.description,
+                              style: TextStyle(
+                                color: AppColors.text,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                  ),
+                );
+              },
             ),
-          ),
-        );
-      },
     );
   }
 }

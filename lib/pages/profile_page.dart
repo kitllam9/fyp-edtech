@@ -53,9 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
             if (success) {
               if (!mounted) return;
               context.loaderOverlay.hide();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                '/home',
-                (route) => false,
+              Navigator.of(context).pushNamed(
+                '/auth',
               );
             }
           });

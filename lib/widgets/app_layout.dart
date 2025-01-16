@@ -39,6 +39,12 @@ class _AppLayoutState extends State<AppLayout> {
   @override
   void initState() {
     _index = widget.index;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final User user = GetIt.instance.get<User>();
+      if (!user.loggedIn) {
+        Navigator.of(context).pushNamed('/auth');
+      }
+    });
     super.initState();
   }
 
@@ -93,6 +99,7 @@ class _AppLayoutState extends State<AppLayout> {
           ],
           onTap: (value) {
             if (value == 4) {
+              // ignore: avoid_print
               print(GetIt.instance.get<User>().token);
               if (!GetIt.instance.get<User>().loggedIn) {
                 Navigator.of(context).pushNamed('/auth');
@@ -111,7 +118,7 @@ class _AppLayoutState extends State<AppLayout> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
           child: page[_index!],
         ),
       ),

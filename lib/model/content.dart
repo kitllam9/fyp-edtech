@@ -53,8 +53,15 @@ class Content {
     );
   }
 
-  static Future<PaginatedData<Content>?> fetchContent() async {
-    var res = await Api().get(path: '/content');
+  static Future<PaginatedData<Content>?> fetchContent({
+    required int page,
+  }) async {
+    var res = await Api().get(
+      path: '/content',
+      queries: {
+        'page': page.toString(),
+      },
+    );
     if (res?.success ?? false) {
       return PaginatedData<Content>.fromJson(
         res!.data!,

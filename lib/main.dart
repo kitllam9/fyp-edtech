@@ -49,31 +49,31 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return GlobalLoaderOverlay(
-      overlayWidgetBuilder: (progress) => Center(
-        child: SpinKitSquareCircle(
+    return RefreshConfiguration(
+      headerBuilder: () => WaterDropHeader(),
+      footerBuilder: () => ClassicFooter(
+        loadStyle: LoadStyle.ShowWhenLoading,
+        noDataText: 'You\'ve reached the end.',
+        textStyle: TextStyle(color: AppColors.text),
+        loadingText: '',
+        loadingIcon: SpinKitSquareCircle(
           color: AppColors.primary,
-          size: 50.0,
+          size: 25.0,
         ),
       ),
-      child: RefreshConfiguration(
-        headerBuilder: () => WaterDropHeader(),
-        footerBuilder: () => ClassicFooter(
-          loadStyle: LoadStyle.ShowWhenLoading,
-          noDataText: 'You\'ve reached the end.',
-          textStyle: TextStyle(color: AppColors.text),
-          loadingText: '',
-          loadingIcon: SpinKitSquareCircle(
+      headerTriggerDistance: 80.0,
+      maxOverScrollExtent: 100,
+      maxUnderScrollExtent: 0,
+      enableScrollWhenRefreshCompleted: false,
+      enableLoadingWhenFailed: true,
+      hideFooterWhenNotFull: true,
+      child: GlobalLoaderOverlay(
+        overlayWidgetBuilder: (progress) => Center(
+          child: SpinKitSquareCircle(
             color: AppColors.primary,
-            size: 25.0,
+            size: 50.0,
           ),
         ),
-        headerTriggerDistance: 80.0,
-        maxOverScrollExtent: 100,
-        maxUnderScrollExtent: 0,
-        enableScrollWhenRefreshCompleted: true,
-        enableLoadingWhenFailed: true,
-        hideFooterWhenNotFull: false,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           home: const MainApp(),

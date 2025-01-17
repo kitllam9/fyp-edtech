@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fyp_edtech/main.dart';
+import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/styles/dialog.dart';
@@ -10,9 +11,12 @@ import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/appbar.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final GetIt getIt = GetIt.instance;
 
 class PreferencePage extends StatefulWidget {
   const PreferencePage({super.key});
@@ -22,21 +26,17 @@ class PreferencePage extends StatefulWidget {
 }
 
 class _PreferencePageState extends State<PreferencePage> {
-  final List<String> _courses = [
-    'English',
-    'Mathematics',
-    'Biology',
-    'Business',
-  ];
-
   AppBrightness selectedBrightness = Globals.brightness!;
-
   SharedPreferences? prefs;
+
+  final ScrollController _scrollController = ScrollController();
+
+  final List<String> _interests = getIt.get<User>().interest ?? [];
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      prefs = await LocalStorage.prefs;
+      prefs = getIt.get<SharedPreferences>();
     });
     super.initState();
   }
@@ -104,51 +104,72 @@ class _PreferencePageState extends State<PreferencePage> {
           children: [
             Box(
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.fromLTRB(12, 12, 0, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Courses',
+                      'Interests',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,
                       ),
                     ),
-                    for (String course in _courses)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              course,
-                              style: TextStyle(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _courses.remove(course);
-                                });
-                              },
-                              style: IconButton.styleFrom(
-                                minimumSize: Size.zero,
-                                padding: EdgeInsets.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                overlayColor: Colors.transparent,
-                              ),
-                              icon: Icon(
-                                Symbols.close,
-                                size: 18,
-                                color: AppColors.error,
-                              ),
-                            )
-                          ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 200),
+                      child: RawScrollbar(
+                        thumbVisibility: true,
+                        controller: _scrollController,
+                        crossAxisMargin: 5,
+                        thickness: 2,
+                        thumbColor: AppColors.primary,
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (String interest in _interests)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        interest,
+                                        style: TextStyle(
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(right: 12),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _interests.remove(interest);
+                                            });
+                                          },
+                                          style: IconButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.zero,
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            overlayColor: Colors.transparent,
+                                          ),
+                                          icon: Icon(
+                                            Symbols.close,
+                                            size: 18,
+                                            color: AppColors.error,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                            ],
+                          ),
                         ),
-                      )
+                      ),
+                    ),
                   ],
                 ),
               ),

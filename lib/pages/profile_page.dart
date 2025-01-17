@@ -20,6 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    user.getUserData();
     menuItems = {
       'Bookmarks': {
         'icon': Symbols.bookmark,

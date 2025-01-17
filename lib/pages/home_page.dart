@@ -20,7 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool init = true;
-  bool _noMore = false;
   int _page = 1;
   List<Content> contentList = [];
 
@@ -73,69 +72,72 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      onRefresh: _refresh,
-      onLoading: _fetchPage,
-      controller: _refreshController,
-      child: init || _refreshController.headerStatus == RefreshStatus.refreshing
-          ? CustomShimmmerLoader()
-          : MasonryGridView.count(
-              crossAxisCount: 2,
-              itemCount: contentList.length,
-              itemBuilder: (context, index) {
-                Content? content = contentList[index];
-                return Box(
-                  margin: EdgeInsets.all(5),
-                  child: SizedBox(
-                    width: Globals.screenWidth! * 0.42,
-                    height: init ? 250 : null,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GenericButton(
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => content.type == ContentType.notes
-                                  ? CustomPDFViewer(
-                                      id: content.id,
-                                    )
-                                  : ExercisePage(
-                                      id: content.id,
-                                      questions: content.exerciseDetails ?? [],
-                                    ),
-                            ),
-                          );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              content.title,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: AppColors.primary,
+    return ScrollConfiguration(
+      behavior: MaterialScrollBehavior(),
+      child: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: _refresh,
+        onLoading: _fetchPage,
+        controller: _refreshController,
+        child: init || _refreshController.headerStatus == RefreshStatus.refreshing
+            ? CustomShimmmerLoader()
+            : MasonryGridView.extent(
+                maxCrossAxisExtent: Globals.screenWidth! * 0.5,
+                itemCount: contentList.length,
+                itemBuilder: (context, index) {
+                  Content? content = contentList[index];
+                  return Box(
+                    margin: EdgeInsets.all(5),
+                    child: SizedBox(
+                      width: Globals.screenWidth! * 0.42,
+                      height: init ? 250 : null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GenericButton(
+                          onPressed: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => content.type == ContentType.notes
+                                    ? CustomPDFViewer(
+                                        id: content.id,
+                                      )
+                                    : ExercisePage(
+                                        id: content.id,
+                                        questions: content.exerciseDetails ?? [],
+                                      ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              content.description,
-                              style: TextStyle(
-                                color: AppColors.text,
+                            );
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                content.title,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.primary,
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                content.description,
+                                style: TextStyle(
+                                  color: AppColors.text,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
+      ),
     );
   }
 }

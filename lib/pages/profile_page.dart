@@ -20,7 +20,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    user.getUserData();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await user.getUserData();
+      setState(() {});
+    });
     menuItems = {
       'Bookmarks': {
         'icon': Symbols.bookmark,
@@ -98,10 +101,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: '999999 ',
+                            text: '${user.points ?? 0}',
                           ),
                           TextSpan(
-                            text: 'Points',
+                            text: ' Points',
                           ),
                         ],
                       ),

@@ -133,6 +133,7 @@ class _SearchPageState extends State<SearchPage> {
                                   builder: (context) => content?.type == ContentType.notes
                                       ? CustomPDFViewer(
                                           id: content!.id,
+                                          points: content.points,
                                         )
                                       : ExercisePage(
                                           id: content!.id,

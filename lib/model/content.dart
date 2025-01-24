@@ -28,6 +28,7 @@ class Content {
   final String? pdfUrl;
   final List<Question>? exerciseDetails;
   final List<dynamic> tags;
+  final int points;
 
   Content({
     required this.id,
@@ -37,6 +38,7 @@ class Content {
     this.pdfUrl,
     this.exerciseDetails,
     required this.tags,
+    required this.points,
   });
 
   static Content fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class Content {
           ? [for (var q in jsonDecode(json['exercise_details']).cast<Map<String, dynamic>>()) Question.fromJson(q)]
           : null,
       tags: jsonDecode(json['tags']),
+      points: json['points'],
     );
   }
 

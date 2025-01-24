@@ -4,12 +4,14 @@ import 'dart:typed_data';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/model/content.dart';
+import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/file_io.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 
@@ -19,13 +21,21 @@ enum CompletedType {
   quest,
 }
 
+final User user = GetIt.instance.get<User>();
+
 class CompletedPage extends StatefulWidget {
   final CompletedType type;
   final int contentId;
+  final List<int> targets;
+  final int currentPoints;
+  final int targetPoints;
   const CompletedPage({
     super.key,
     required this.type,
     required this.contentId,
+    required this.targets,
+    required this.currentPoints,
+    required this.targetPoints,
   });
 
   @override
@@ -33,64 +43,110 @@ class CompletedPage extends StatefulWidget {
 }
 
 class _CompletedPageState extends State<CompletedPage> {
-  final double _totalPoints = 100;
-
-  final double _currentValue = 24;
-  final double _targetValue = 120;
   double ratio = 0;
 
   bool _progressAnimationFinished = false;
   bool _initDisplay = true;
 
   void ratioVal() async {
-    if (mounted) {
-      if (ratio == 0) {
-        setState(() {
-          ratio = _currentValue / _totalPoints;
-        });
-        if (ratio == _currentValue / _totalPoints) {
-          Future.delayed(Duration(milliseconds: 500), () {
-            setState(() {
-              _initDisplay = false;
-              if (_targetValue / _totalPoints >= 1) {
-                ratio = 1;
-              } else {
-                ratio = _targetValue / _totalPoints;
-              }
-            });
-            if (_targetValue / _totalPoints >= 1 && ratio == 1) {
-              Future.delayed(Duration(milliseconds: 500), () {
-                setState(() {
-                  ratio = 0;
-                });
-                if (ratio == 0) {
-                  Future.delayed(Duration(milliseconds: 500), () {
-                    setState(() {
-                      ratio = (_targetValue - _totalPoints) / _totalPoints;
-                    });
-                    if (ratio == (_targetValue - _totalPoints) / _totalPoints) {
-                      Future.delayed(Duration(milliseconds: 500), () {
-                        setState(() {
-                          _progressAnimationFinished = true;
-                        });
-                      });
-                    }
-                  });
-                }
-              });
+    if (!mounted) return;
+    if (ratio == 0) {
+      setState(() {
+        ratio = widget.currentPoints / widget.targets[0];
+      });
+      if (ratio == widget.currentPoints / widget.targets[0]) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          setState(() {
+            _initDisplay = false;
+            if (widget.targetPoints / widget.targets[0] >= 1) {
+              ratio = 1;
             } else {
-              Future.delayed(Duration(milliseconds: 500), () {
-                setState(() {
-                  _progressAnimationFinished = true;
-                });
-              });
+              ratio = widget.targetPoints / widget.targets[0];
             }
           });
-        }
+          if (widget.targetPoints / widget.targets[0] >= 1 && ratio == 1) {
+            Future.delayed(Duration(milliseconds: 500), () {
+              setState(() {
+                ratio = 0;
+              });
+              if (ratio == 0) {
+                Future.delayed(Duration(milliseconds: 500), () {
+                  setState(() {
+                    _initDisplay = false;
+                    if (widget.targetPoints / widget.targets[1] >= 1) {
+                      ratio = 1;
+                    } else {
+                      ratio = widget.targetPoints / widget.targets[1];
+                    }
+                  });
+                  if (widget.targetPoints / widget.targets[1] >= 1 && ratio == 1) {
+                    Future.delayed(Duration(milliseconds: 500), () {
+                      setState(() {
+                        ratio = 0;
+                      });
+                      if (ratio == 0) {
+                        Future.delayed(Duration(milliseconds: 500), () {
+                          setState(() {
+                            ratio = widget.targetPoints / widget.targets[2];
+                          });
+                          if (ratio == widget.targetPoints / widget.targets[2]) {
+                            Future.delayed(Duration(milliseconds: 500), () {
+                              setState(() {
+                                _progressAnimationFinished = true;
+                              });
+                            });
+                          }
+                        });
+                      }
+                    });
+                  } else {
+                    Future.delayed(Duration(milliseconds: 500), () {
+                      setState(() {
+                        _progressAnimationFinished = true;
+                      });
+                    });
+                  }
+                });
+              }
+            });
+          } else {
+            Future.delayed(Duration(milliseconds: 500), () {
+              setState(() {
+                _progressAnimationFinished = true;
+              });
+            });
+          }
+        });
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (_targetValue >= _totalPoints) {
+      if (widget.targetPoints >= widget.targets[0]) {
+        await Future.delayed(Duration(milliseconds: 450));
+        if (!mounted) return;
+        ElegantNotification(
+          toastDuration: Duration(seconds: 7),
+          animationDuration: Duration(seconds: 1),
+          animationCurve: Curves.easeInOut,
+          title: Text(
+            'Badge Title',
+            style: TextStyle(
+              color: AppColors.secondary,
+            ),
+          ),
+          description: Text(
+            "Some badge description",
+            style: TextStyle(
+              color: AppColors.secondary,
+            ),
+          ),
+          icon: Icon(
+            Icons.workspace_premium,
+            color: AppColors.secondary,
+          ),
+          progressIndicatorColor: AppColors.secondary,
+        ).show(context);
+      }
+      if (widget.targetPoints >= widget.targets[1]) {
         await Future.delayed(Duration(milliseconds: 450));
         if (!mounted) return;
         ElegantNotification(
@@ -122,9 +178,9 @@ class _CompletedPageState extends State<CompletedPage> {
   @override
   void initState() {
     ratioVal();
-    if (widget.type == CompletedType.notes || widget.type == CompletedType.exercise) {
-      Content.complete(widget.contentId);
-    }
+    // if (widget.type == CompletedType.notes || widget.type == CompletedType.exercise) {
+    //   Content.complete(widget.contentId);
+    // }
     super.initState();
   }
 
@@ -193,7 +249,7 @@ class _CompletedPageState extends State<CompletedPage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          '+${(_targetValue - _currentValue).toStringAsFixed(0)} Points',
+                          '+${(widget.targetPoints - widget.currentPoints).toStringAsFixed(0)} Points',
                           style: TextStyle(
                             color: AppColors.primary,
                           ),
@@ -209,7 +265,7 @@ class _CompletedPageState extends State<CompletedPage> {
                     child: Row(
                       children: [
                         Text(
-                          '(${(_targetValue % _totalPoints == 0 ? _totalPoints : _totalPoints - (_targetValue % _totalPoints)).toStringAsFixed(0)} points until the next badge)',
+                          '(${(widget.targetPoints % widget.targets.last == 0 ? widget.targets.last : widget.targets.last - (widget.targetPoints % widget.targets.last))} points until the next badge)',
                           style: TextStyle(
                             color: AppColors.primary,
                           ),

@@ -102,6 +102,7 @@ class _HomePageState extends State<HomePage> {
                                 builder: (context) => content.type == ContentType.notes
                                     ? CustomPDFViewer(
                                         id: content.id,
+                                        points: content.points,
                                       )
                                     : ExercisePage(
                                         id: content.id,

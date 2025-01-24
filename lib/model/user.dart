@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:fyp_edtech/service/api.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +8,7 @@ class User {
 
   String? username;
   String? email;
+  int? points;
   List<String>? interest;
 
   Future<bool> logout() async {
@@ -33,7 +32,23 @@ class User {
     if (res?.success ?? false) {
       username = res!.data!['username'];
       email = res.data!['email'];
-      interest = List<String>.from(jsonDecode(res.data!['interest']) ?? []);
+      points = res.data!['points'];
+      interest = List<String>.from(res.data!['interest'] ?? []);
     }
+  }
+
+  Future<Map<String, dynamic>?> checkBadges({
+    required int points,
+  }) async {
+    var res = await Api().get(
+      path: '/badge/check',
+      queries: {
+        'points': points.toString(),
+      },
+    );
+    if (res?.success ?? false) {
+      return res!.data!;
+    }
+    return null;
   }
 }

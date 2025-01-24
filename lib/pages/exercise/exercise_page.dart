@@ -96,14 +96,14 @@ class _ExercisePageState extends State<ExercisePage> {
               ),
               onPressed: () {
                 if (_currentPage == _total) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => CompletedPage(
-                        contentId: widget.id,
-                        type: CompletedType.exercise,
-                      ),
-                    ),
-                  );
+                  // Navigator.of(context).pushReplacement(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => CompletedPage(
+                  //       contentId: widget.id,
+                  //       type: CompletedType.exercise,
+                  //     ),
+                  //   ),
+                  // );
                 } else {
                   setState(() {
                     _currentPage = _currentPage + 1;

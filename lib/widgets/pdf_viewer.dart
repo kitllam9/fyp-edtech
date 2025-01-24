@@ -1,20 +1,23 @@
-
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/styles/dialog.dart';
+import 'package:get_it/get_it.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CustomPDFViewer extends StatefulWidget {
   final int id;
+  final int points;
   const CustomPDFViewer({
     super.key,
     required this.id,
+    required this.points,
   });
 
   @override
@@ -26,6 +29,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   int _currentPage = 1;
   int? _total;
   PDFDocument? doc;
+  final User user = GetIt.instance.get<User>();
 
   @override
   void initState() {
@@ -77,16 +81,22 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   _currentPage == (_total ?? -1) ? 'Finish' : 'Exit',
                   style: TextStyle(color: AppColors.secondary),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_currentPage == (_total ?? -1)) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => CompletedPage(
-                          contentId: widget.id,
-                          type: CompletedType.notes,
+                    await user.checkBadges(points: widget.points).then((map) {
+                      if (!context.mounted) return;
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => CompletedPage(
+                            contentId: widget.id,
+                            type: CompletedType.notes,
+                            targets: List<int>.from(map!['targets']),
+                            currentPoints: map['current_points'],
+                            targetPoints: map['target_points'],
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    });
                   } else {
                     generalDialog(
                       icon: Symbols.help,

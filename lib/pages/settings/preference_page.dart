@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fyp_edtech/main.dart';
 import 'package:fyp_edtech/model/user.dart';
-import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/styles/dialog.dart';
 import 'package:fyp_edtech/utils/globals.dart';

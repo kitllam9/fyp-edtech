@@ -107,14 +107,15 @@ class _StatsPageState extends State<StatsPage> {
                 ListView.builder(
                   itemCount: 5,
                   itemBuilder: (context, index) => GenericButton(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => CompletedPage(
-                          contentId: 1,
-                          type: CompletedType.quest,
-                        ),
-                      ),
-                    ),
+                    // onPressed: () => Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => CompletedPage(
+                    //       contentId: 1,
+                    //       type: CompletedType.quest,
+                    //     ),
+                    //   ),
+                    // ),
+                    onPressed: () => print('object'),
                     child: Box(
                       margin: EdgeInsets.fromLTRB(5, 5, 5, 10),
                       child: Padding(

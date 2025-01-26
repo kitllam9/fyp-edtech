@@ -26,7 +26,6 @@ class _HomePageState extends State<HomePage> {
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   Future<void> _fetchPage() async {
-    await Future.delayed(Durations.long4);
     try {
       PaginatedData<Content>? response = await Content.fetchContent(page: _page);
       List<Content>? content = response?.data;
@@ -67,6 +66,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    _refreshController.dispose();
     super.dispose();
   }
 

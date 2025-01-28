@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/model/question.dart';
-import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/pages/exercise/multiple_choice.dart';
 import 'package:fyp_edtech/pages/exercise/short_question.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/model/member.dart';
 import 'package:fyp_edtech/model/paginated_data.dart';
-import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/widgets/custom_shimmer_loader.dart';
 import 'package:fyp_edtech/widgets/placeholder.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 
 class StatsPage extends StatefulWidget {
@@ -38,7 +37,7 @@ class _StatsPageState extends State<StatsPage> {
           _refreshController.loadComplete();
         });
       }
-    } catch (e, s) {
+    } catch (e) {
       //
     }
   }

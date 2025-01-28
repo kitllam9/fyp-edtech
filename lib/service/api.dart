@@ -155,6 +155,8 @@ class Api {
         return apiResponse;
       },
     ).onError((error, stackTrace) {
+      print(error);
+      print(stackTrace);
       throw error as Error;
     });
   }

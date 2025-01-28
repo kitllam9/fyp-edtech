@@ -56,14 +56,19 @@ class Content {
     );
   }
 
-  static Future<PaginatedData<Content>?> fetchContent({
+  static Future<PaginatedData<Content>?> search({
     required int page,
+    String? keyword,
   }) async {
+    Map<String, String> queries = {
+      'page': page.toString(),
+    };
+    if (keyword != null) {
+      queries['keyword'] = keyword;
+    }
     var res = await Api().get(
       path: '/content',
-      queries: {
-        'page': page.toString(),
-      },
+      queries: queries,
     );
     if (res?.success ?? false) {
       return PaginatedData<Content>.fromJson(

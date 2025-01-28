@@ -30,7 +30,7 @@ class _PreferencePageState extends State<PreferencePage> {
 
   final ScrollController _scrollController = ScrollController();
 
-  final List<String> _interests = getIt.get<User>().interest ?? [];
+  final List<String> _interests = getIt.get<User>().interests ?? [];
 
   @override
   void initState() {

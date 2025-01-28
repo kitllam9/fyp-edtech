@@ -9,7 +9,8 @@ class User {
   String? username;
   String? email;
   int? points;
-  List<String>? interest;
+  List<String>? interests;
+  List<int>? badges;
 
   Future<bool> logout() async {
     var res = await Api().get(
@@ -33,7 +34,8 @@ class User {
       username = res!.data!['username'];
       email = res.data!['email'];
       points = res.data!['points'];
-      interest = List<String>.from(res.data!['interest'] ?? []);
+      interests = List<String>.from(res.data!['interests'] ?? []);
+      badges = List<int>.from(res.data!['badges'] ?? []);
     }
   }
 

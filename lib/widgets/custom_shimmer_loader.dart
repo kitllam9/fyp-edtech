@@ -18,49 +18,47 @@ class CustomShimmmerLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ListView(
       physics: NeverScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          for (int i = 0; i < (row ?? 3); i++)
-            Row(
-              children: [
-                for (int j = 0; j < (col ?? 2); j++) ...[
-                  customLayoutBuilder != null
-                      ? customLayoutBuilder!(i)
-                      : Box(
-                          margin: EdgeInsets.all(5),
-                          child: SizedBox(
-                            width: Globals.screenWidth! * 0.42,
-                            height: 250,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Shimmer.fromColors(
-                                baseColor: AppColors.shimmerBase,
-                                highlightColor: AppColors.shimmerHighlight,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TitlePlaceholder(
-                                      height: 24,
-                                    ),
-                                    SizedBox(
-                                      height: 18,
-                                    ),
-                                    ContentPlaceholder(
-                                      lines: 3,
-                                    ),
-                                  ],
-                                ),
+      children: [
+        for (int i = 0; i < (row ?? 3); i++)
+          Row(
+            children: [
+              for (int j = 0; j < (col ?? 2); j++) ...[
+                customLayoutBuilder != null
+                    ? customLayoutBuilder!(i)
+                    : Box(
+                        margin: EdgeInsets.all(5),
+                        child: SizedBox(
+                          width: Globals.screenWidth! * 0.42,
+                          height: 250,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Shimmer.fromColors(
+                              baseColor: AppColors.shimmerBase,
+                              highlightColor: AppColors.shimmerHighlight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TitlePlaceholder(
+                                    height: 24,
+                                  ),
+                                  SizedBox(
+                                    height: 18,
+                                  ),
+                                  ContentPlaceholder(
+                                    lines: 3,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                ]
-              ],
-            ),
-        ],
-      ),
+                      ),
+              ]
+            ],
+          ),
+      ],
     );
   }
 }

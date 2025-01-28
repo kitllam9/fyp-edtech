@@ -9,7 +9,7 @@ import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/widgets/custom_shimmer_loader.dart';
 import 'package:fyp_edtech/widgets/pdf_viewer.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,9 +25,9 @@ class _HomePageState extends State<HomePage> {
 
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
-  Future<void> _fetchPage() async {
+  Future<void> _search() async {
     try {
-      PaginatedData<Content>? response = await Content.fetchContent(page: _page);
+      PaginatedData<Content>? response = await Content.search(page: _page);
       List<Content>? content = response?.data;
       if (content!.isEmpty) {
         _refreshController.loadNoData();
@@ -48,14 +48,14 @@ class _HomePageState extends State<HomePage> {
       contentList.clear();
       _page = 1;
     });
-    await _fetchPage();
+    await _search();
     _refreshController.refreshCompleted(resetFooterState: true);
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _fetchPage().then((_) {
+      await _search().then((_) {
         setState(() {
           init = false;
         });
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
         enablePullDown: true,
         enablePullUp: true,
         onRefresh: _refresh,
-        onLoading: _fetchPage,
+        onLoading: _search,
         controller: _refreshController,
         child: init || _refreshController.headerStatus == RefreshStatus.refreshing
             ? CustomShimmmerLoader()

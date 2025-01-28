@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fyp_edtech/model/content.dart';
@@ -9,10 +8,10 @@ import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
+import 'package:fyp_edtech/widgets/custom_shimmer_loader.dart';
 import 'package:fyp_edtech/widgets/pdf_viewer.dart';
-import 'package:fyp_edtech/widgets/placeholder.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -24,24 +23,84 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final FocusNode inputFocusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
-  PaginatedData<Content>? contentList;
+  String keyword = '';
 
-  bool _isLoading = true;
-  int page = 1;
+  List<Content> contentList = [];
+
+  late final Debouncer<String> debouncer;
+
+  bool init = true;
+  int _page = 1;
+
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+
+  Future<void> _search({
+    String? keyword,
+  }) async {
+    try {
+      PaginatedData<Content>? response = await Content.search(
+        page: _page,
+        keyword: keyword,
+      );
+      List<Content>? content = response?.data;
+      if (content!.isEmpty) {
+        _refreshController.loadNoData();
+      } else {
+        setState(() {
+          _page++;
+          contentList.addAll(content);
+          _refreshController.loadComplete();
+        });
+      }
+    } catch (error) {
+      //
+    }
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      contentList.clear();
+      _textEditingController.clear();
+      _page = 1;
+    });
+    await _search();
+    _refreshController.refreshCompleted(resetFooterState: true);
+  }
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Content.fetchContent(page: page).then((val) {
-        if (mounted) {
+    debouncer = Debouncer<String>(
+      Duration(milliseconds: 750),
+      onChanged: (value) async {
+        setState(() {
+          _page = 1;
+          contentList.clear();
+        });
+        await _search(
+          keyword: value,
+        ).then((_) {
           setState(() {
-            contentList = val;
-            _isLoading = false;
+            init = false;
           });
-        }
+        });
+      },
+      initialValue: '',
+    );
+    _textEditingController.addListener(() => debouncer.value = _textEditingController.text);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _search().then((_) {
+        setState(() {
+          init = false;
+        });
       });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -54,7 +113,14 @@ class _SearchPageState extends State<SearchPage> {
             cursorColor: AppColors.primary,
             controller: _textEditingController,
             focusNode: inputFocusNode,
+            onChanged: (value) => setState(() {
+              init = true;
+              keyword = value;
+            }),
             onTapOutside: (event) => FocusScope.of(context).unfocus(),
+            style: TextStyle(
+              color: AppColors.primary,
+            ),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(15),
               enabledBorder: OutlineInputBorder(
@@ -93,81 +159,75 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
         Expanded(
-          child: MasonryGridView.builder(
-            physics: _isLoading ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
-            itemCount: _isLoading ? 6 : contentList?.data.length,
-            gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-            itemBuilder: (context, index) {
-              Content? content = contentList?.data[index];
-              return Box(
-                margin: EdgeInsets.all(5),
-                child: SizedBox(
-                  width: Globals.screenWidth! * 0.42,
-                  height: _isLoading ? 250 : Random().nextInt(250) + 100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _isLoading
-                        ? Shimmer.fromColors(
-                            baseColor: AppColors.shimmerBase,
-                            highlightColor: AppColors.shimmerHighlight,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TitlePlaceholder(
-                                  height: 24,
+          child: ScrollConfiguration(
+            behavior: MaterialScrollBehavior(),
+            child: SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: _refresh,
+              onLoading: () {
+                _search(keyword: keyword);
+              },
+              controller: _refreshController,
+              child: init || _refreshController.headerStatus == RefreshStatus.refreshing
+                  ? CustomShimmmerLoader()
+                  : MasonryGridView.extent(
+                      maxCrossAxisExtent: Globals.screenWidth! * 0.5,
+                      itemCount: contentList.length,
+                      itemBuilder: (context, index) {
+                        Content? content = contentList[index];
+                        return Box(
+                          margin: EdgeInsets.all(5),
+                          child: SizedBox(
+                            width: Globals.screenWidth! * 0.42,
+                            height: init ? 250 : null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GenericButton(
+                                onPressed: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => content.type == ContentType.notes
+                                          ? CustomPDFViewer(
+                                              id: content.id,
+                                              points: content.points,
+                                            )
+                                          : ExercisePage(
+                                              id: content.id,
+                                              questions: content.exerciseDetails ?? [],
+                                            ),
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      content.title,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      content.description,
+                                      style: TextStyle(
+                                        color: AppColors.text,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(
-                                  height: 18,
-                                ),
-                                ContentPlaceholder(
-                                  lines: 3,
-                                ),
-                              ],
-                            ),
-                          )
-                        : GenericButton(
-                            onPressed: () async {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => content?.type == ContentType.notes
-                                      ? CustomPDFViewer(
-                                          id: content!.id,
-                                          points: content.points,
-                                        )
-                                      : ExercisePage(
-                                          id: content!.id,
-                                          questions: content.exerciseDetails ?? [],
-                                        ),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  content?.title ?? '',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  content?.description ?? '',
-                                  style: TextStyle(
-                                    color: AppColors.text,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                  ),
-                ),
-              );
-            },
+                        );
+                      },
+                    ),
+            ),
           ),
         )
       ],

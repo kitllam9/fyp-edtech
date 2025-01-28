@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';

@@ -39,6 +39,16 @@ class User {
     }
   }
 
+  Future<bool> update({
+    required Map<String, String> payload,
+  }) async {
+    var res = await Api().put(
+      path: '/user',
+      payload: payload,
+    );
+    return res?.success ?? false;
+  }
+
   Future<Map<String, dynamic>?> checkBadges({
     required int points,
   }) async {

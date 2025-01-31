@@ -1,6 +1,7 @@
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fyp_edtech/model/badge.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
@@ -93,6 +94,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                             targets: List<int>.from(map!['targets']),
                             currentPoints: map['current_points'],
                             targetPoints: map['target_points'],
+                            earnedBadges: [for (var json in map['earned_badges']) MyBadge.fromJson(json)],
                           ),
                         ),
                       );

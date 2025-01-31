@@ -130,7 +130,7 @@ class Api {
       case 'put':
         request = http.put(
           uri,
-          body: payload,
+          body: jsonEncode(payload),
           headers: headers ?? defaultHeaders,
         );
         break;

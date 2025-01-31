@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/model/member.dart';
 import 'package:fyp_edtech/model/paginated_data.dart';
+import 'package:fyp_edtech/model/quest.dart';
+import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/widgets/custom_shimmer_loader.dart';
 import 'package:fyp_edtech/widgets/placeholder.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
+
+final User currentUser = GetIt.instance.get<User>();
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -21,6 +26,7 @@ class _StatsPageState extends State<StatsPage> {
   bool init = true;
   int _page = 1;
   List<Member> userList = [];
+  List<Quest> questList = [];
 
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
@@ -54,6 +60,11 @@ class _StatsPageState extends State<StatsPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Quest.fetch().then((list) {
+        setState(() {
+          questList = list ?? [];
+        });
+      });
       await _fetchPage().then((_) {
         setState(() {
           init = false;
@@ -180,7 +191,9 @@ class _StatsPageState extends State<StatsPage> {
                           itemCount: userList.length,
                           itemBuilder: (context, index) {
                             Member? user = userList[index];
+                            bool isCurrentUser = currentUser.username == user.username;
                             return Box(
+                              backgroundColor: isCurrentUser ? AppColors.primary : AppColors.secondary,
                               margin: EdgeInsets.all(5),
                               child: Container(
                                 padding: EdgeInsets.all(12),
@@ -192,7 +205,7 @@ class _StatsPageState extends State<StatsPage> {
                                         '${index + 1}',
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: AppColors.primary,
+                                          color: isCurrentUser ? AppColors.secondary : AppColors.primary,
                                         ),
                                       ),
                                     ),
@@ -213,7 +226,7 @@ class _StatsPageState extends State<StatsPage> {
                                           user.username,
                                           style: TextStyle(
                                             fontSize: 18,
-                                            color: AppColors.primary,
+                                            color: isCurrentUser ? AppColors.secondary : AppColors.primary,
                                           ),
                                         ),
                                         SizedBox(
@@ -222,7 +235,7 @@ class _StatsPageState extends State<StatsPage> {
                                         Text(
                                           '${user.points} points',
                                           style: TextStyle(
-                                            color: AppColors.primary,
+                                            color: isCurrentUser ? AppColors.secondary : AppColors.primary,
                                           ),
                                         ),
                                       ],
@@ -235,49 +248,55 @@ class _StatsPageState extends State<StatsPage> {
                         ),
                 ),
                 ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) => GenericButton(
-                    // onPressed: () => Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => CompletedPage(
-                    //       contentId: 1,
-                    //       type: CompletedType.quest,
-                    //     ),
-                    //   ),
-                    // ),
-                    onPressed: () => print('object'),
-                    child: Box(
-                      margin: EdgeInsets.fromLTRB(5, 5, 5, 10),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
+                  itemCount: questList.length,
+                  itemBuilder: (context, index) {
+                    Quest quest = questList[index];
+                    return GenericButton(
+                      // onPressed: () => Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => CompletedPage(
+                      //       contentId: 1,
+                      //       type: CompletedType.quest,
+                      //     ),
+                      //   ),
+                      // ),
+                      onPressed: () => print('object'),
+                      child: Box(
+                        margin: EdgeInsets.fromLTRB(5, 5, 5, 10),
                         child: Row(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  index == 0 ? 'Daily Quest' : 'Regular Quest',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 20,
-                                  ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      quest.name,
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      quest.description,
+                                      style: TextStyle(
+                                        color: AppColors.text,
+                                        height: 1.7,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'Description',
-                                  style: TextStyle(
-                                    color: AppColors.text,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),

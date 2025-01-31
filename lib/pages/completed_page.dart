@@ -2,7 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/stacked_options.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp_edtech/model/badge.dart';
+import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
@@ -28,6 +31,7 @@ class CompletedPage extends StatefulWidget {
   final List<int> targets;
   final int currentPoints;
   final int targetPoints;
+  final List<MyBadge> earnedBadges;
   const CompletedPage({
     super.key,
     required this.type,
@@ -35,6 +39,7 @@ class CompletedPage extends StatefulWidget {
     required this.targets,
     required this.currentPoints,
     required this.targetPoints,
+    required this.earnedBadges,
   });
 
   @override
@@ -119,47 +124,26 @@ class _CompletedPageState extends State<CompletedPage> {
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.targetPoints >= widget.targets[0]) {
-        await Future.delayed(Duration(milliseconds: 450));
+      await Future.delayed(Duration(milliseconds: 450));
+      for (int index = 0; index < widget.earnedBadges.length; index++) {
         if (!mounted) return;
         ElegantNotification(
+          stackedOptions: StackedOptions(
+            key: widget.earnedBadges[index].name,
+            itemOffset: Offset(0, (index + 1) * -125),
+            type: StackedType.below,
+          ),
           toastDuration: Duration(seconds: 7),
           animationDuration: Duration(seconds: 1),
           animationCurve: Curves.easeInOut,
           title: Text(
-            'Badge Title',
+            widget.earnedBadges[index].name,
             style: TextStyle(
               color: AppColors.secondary,
             ),
           ),
           description: Text(
-            "Some badge description",
-            style: TextStyle(
-              color: AppColors.secondary,
-            ),
-          ),
-          icon: Icon(
-            Icons.workspace_premium,
-            color: AppColors.secondary,
-          ),
-          progressIndicatorColor: AppColors.secondary,
-        ).show(context);
-      }
-      if (widget.targetPoints >= widget.targets[1]) {
-        await Future.delayed(Duration(milliseconds: 450));
-        if (!mounted) return;
-        ElegantNotification(
-          toastDuration: Duration(seconds: 7),
-          animationDuration: Duration(seconds: 1),
-          animationCurve: Curves.easeInOut,
-          title: Text(
-            'Badge Title',
-            style: TextStyle(
-              color: AppColors.secondary,
-            ),
-          ),
-          description: Text(
-            "Some badge description",
+            widget.earnedBadges[index].description,
             style: TextStyle(
               color: AppColors.secondary,
             ),
@@ -177,9 +161,9 @@ class _CompletedPageState extends State<CompletedPage> {
   @override
   void initState() {
     ratioVal();
-    // if (widget.type == CompletedType.notes || widget.type == CompletedType.exercise) {
-    //   Content.complete(widget.contentId);
-    // }
+    if (widget.type == CompletedType.notes || widget.type == CompletedType.exercise) {
+      Content.complete(widget.contentId);
+    }
     super.initState();
   }
 

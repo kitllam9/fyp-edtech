@@ -27,7 +27,7 @@ final User user = GetIt.instance.get<User>();
 
 class CompletedPage extends StatefulWidget {
   final CompletedType type;
-  final int contentId;
+  final int? contentId;
   final List<int> targets;
   final int currentPoints;
   final int targetPoints;
@@ -35,7 +35,7 @@ class CompletedPage extends StatefulWidget {
   const CompletedPage({
     super.key,
     required this.type,
-    required this.contentId,
+    this.contentId,
     required this.targets,
     required this.currentPoints,
     required this.targetPoints,
@@ -162,7 +162,7 @@ class _CompletedPageState extends State<CompletedPage> {
   void initState() {
     ratioVal();
     if (widget.type == CompletedType.notes || widget.type == CompletedType.exercise) {
-      Content.complete(widget.contentId);
+      Content.complete(widget.contentId!);
     }
     super.initState();
   }

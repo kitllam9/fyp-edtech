@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class GenericButton extends StatelessWidget {
   final Function() onPressed;
   final Widget child;
+  final bool disabled;
   const GenericButton({
     super.key,
     required this.onPressed,
     required this.child,
+    this.disabled = false,
   });
 
   @override
@@ -20,7 +22,7 @@ class GenericButton extends StatelessWidget {
         overlayColor: Colors.transparent,
         alignment: Alignment.topLeft,
       ),
-      onPressed: onPressed,
+      onPressed: disabled ? null : onPressed,
       child: child,
     );
   }

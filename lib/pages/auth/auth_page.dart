@@ -466,13 +466,15 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                                   if (!_registerFormKey.currentState!.validate()) {
                                     return;
                                   }
+                                  context.loaderOverlay.show();
                                   await Auth.register(
                                     username: _usernameController[AuthMode.register]!.text,
                                     email: _emailController.text,
                                     password: _pwdController[AuthMode.register]!.text,
                                   ).then((res) {
+                                    if (!context.mounted) return;
+                                    context.loaderOverlay.hide();
                                     if (res?.success ?? false) {
-                                      if (!context.mounted) return;
                                       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
                                     } else {
                                       setState(() {

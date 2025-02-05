@@ -195,7 +195,9 @@ class _SearchPageState extends State<SearchPage> {
                                             )
                                           : ExercisePage(
                                               id: content.id,
+                                              points: content.points,
                                               questions: content.exerciseDetails ?? [],
+                                              mode: ExerciseViewMode.regular,
                                             ),
                                     ),
                                   );

@@ -5,6 +5,7 @@ import 'package:fyp_edtech/model/paginated_data.dart';
 import 'package:fyp_edtech/pages/exercise/exercise_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/globals.dart';
+import 'package:fyp_edtech/utils/misc.dart';
 import 'package:fyp_edtech/widgets/box.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:fyp_edtech/widgets/custom_shimmer_loader.dart';
@@ -107,6 +108,8 @@ class _HomePageState extends State<HomePage> {
                                     : ExercisePage(
                                         id: content.id,
                                         questions: content.exerciseDetails ?? [],
+                                        points: content.points,
+                                        mode: ExerciseViewMode.regular,
                                       ),
                               ),
                             );
@@ -114,6 +117,25 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.unselected,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Text(
+                                      content.type.name.capitalize(),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.secondary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               Text(
                                 content.title,
                                 style: TextStyle(
@@ -122,12 +144,13 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 8,
                               ),
                               Text(
                                 content.description,
                                 style: TextStyle(
                                   color: AppColors.text,
+                                  fontSize: 12,
                                 ),
                               ),
                             ],

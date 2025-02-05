@@ -6,7 +6,9 @@ import 'package:elegant_notification/resources/stacked_options.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_edtech/model/badge.dart';
 import 'package:fyp_edtech/model/content.dart';
+import 'package:fyp_edtech/model/question.dart';
 import 'package:fyp_edtech/model/user.dart';
+import 'package:fyp_edtech/pages/exercise/exercise_page.dart';
 import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/file_io.dart';
@@ -26,16 +28,24 @@ enum CompletedType {
 final User user = GetIt.instance.get<User>();
 
 class CompletedPage extends StatefulWidget {
-  final CompletedType type;
   final int? contentId;
+  final CompletedType type;
+  final int? correct;
+  final int? total;
+  final List<Question>? questions;
+  final Map<String, List<String>>? results;
   final List<int> targets;
   final int currentPoints;
   final int targetPoints;
   final List<MyBadge> earnedBadges;
   const CompletedPage({
     super.key,
-    required this.type,
     this.contentId,
+    required this.type,
+    this.correct,
+    this.total,
+    this.questions,
+    this.results,
     required this.targets,
     required this.currentPoints,
     required this.targetPoints,
@@ -190,7 +200,7 @@ class _CompletedPageState extends State<CompletedPage> {
                 ),
               if (widget.type == CompletedType.exercise) ...[
                 Text(
-                  '90%',
+                  '${((widget.correct! / widget.total!) * 100).toStringAsFixed(2)}%',
                   style: TextStyle(
                     fontSize: 66,
                     color: AppColors.primary,
@@ -201,7 +211,7 @@ class _CompletedPageState extends State<CompletedPage> {
                   height: 10,
                 ),
                 Text(
-                  'You got 9 out of 10 questions right!',
+                  'You got ${widget.correct!} out of ${widget.total!} questions right!',
                   style: TextStyle(
                     fontSize: 20,
                     color: AppColors.primary,
@@ -300,7 +310,19 @@ class _CompletedPageState extends State<CompletedPage> {
                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             }
                           });
-                        } else if (widget.type == CompletedType.exercise) {}
+                        } else if (widget.type == CompletedType.exercise) {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => ExercisePage(
+                                questions: widget.questions!,
+                                id: widget.contentId!,
+                                points: 0,
+                                mode: ExerciseViewMode.review,
+                                results: widget.results,
+                              ),
+                            ),
+                          );
+                        }
                       },
                       backgroundColor: AppColors.primary,
                       width: Globals.screenWidth! * 0.8,

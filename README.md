@@ -1,6 +1,6 @@
 # Installation
 
-1. Install Flutter on your environment. (https://docs.flutter.dev/get-started/install)
+1. Install Flutter on your environment. (https://docs.flutter.dev/get-started/install) </br>
    Note that the project is developed for both Android and IOS, so both Windows and MacOS versions of the SDK should be available.
 
 2. Clone the repository, or unzip the compressed source code files.

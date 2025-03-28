@@ -9,4 +9,4 @@
 
 4. Start an emulator and make sure it is connected.
 
-5. Run the project with `flutter run` or the IDE's GUI.  
+5. Start the web application of the project and run this Flutter project with `flutter run` or the IDE's GUI.

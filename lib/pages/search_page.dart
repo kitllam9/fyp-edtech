@@ -179,7 +179,7 @@ class _SearchPageState extends State<SearchPage> {
                         return Box(
                           margin: EdgeInsets.all(5),
                           child: SizedBox(
-                            width: Globals.screenWidth! * 0.42,
+                            width: Globals.screenWidth! * 0.4,
                             height: init ? 250 : null,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),

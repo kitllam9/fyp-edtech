@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/stacked_options.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +6,6 @@ import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/model/question.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/pages/exercise/exercise_page.dart';
-import 'package:fyp_edtech/service/local_storage.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
 import 'package:fyp_edtech/utils/file_io.dart';
 import 'package:fyp_edtech/utils/globals.dart';
@@ -17,6 +13,7 @@ import 'package:fyp_edtech/widgets/app_layout.dart';
 import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 
 enum CompletedType {
@@ -30,10 +27,17 @@ final User user = GetIt.instance.get<User>();
 class CompletedPage extends StatefulWidget {
   final int? contentId;
   final CompletedType type;
+
+  /// Notes
+  final String? pdfUrl;
+
+  /// Exercise
   final int? correct;
   final int? total;
   final List<Question>? questions;
   final Map<String, List<String>>? results;
+
+  /// Points & Badges
   final List<int> targets;
   final int currentPoints;
   final int targetPoints;
@@ -42,6 +46,7 @@ class CompletedPage extends StatefulWidget {
     super.key,
     this.contentId,
     required this.type,
+    this.pdfUrl,
     this.correct,
     this.total,
     this.questions,
@@ -146,23 +151,24 @@ class _CompletedPageState extends State<CompletedPage> {
           toastDuration: Duration(seconds: 7),
           animationDuration: Duration(seconds: 1),
           animationCurve: Curves.easeInOut,
+          background: AppColors.secondary,
           title: Text(
             widget.earnedBadges[index].name,
             style: TextStyle(
-              color: AppColors.secondary,
+              color: AppColors.primary,
             ),
           ),
           description: Text(
             widget.earnedBadges[index].description,
             style: TextStyle(
-              color: AppColors.secondary,
+              color: AppColors.primary,
             ),
           ),
           icon: Icon(
             Icons.workspace_premium,
-            color: AppColors.secondary,
+            color: AppColors.primary,
           ),
-          progressIndicatorColor: AppColors.secondary,
+          progressIndicatorColor: AppColors.primary,
         ).show(context);
       }
     });
@@ -294,16 +300,17 @@ class _CompletedPageState extends State<CompletedPage> {
                     IconTextButton(
                       onPressed: () async {
                         if (widget.type == CompletedType.notes) {
-                          File file = await getFileFromAssets('sample.pdf');
-                          Uint8List bytes = file.readAsBytesSync();
-
-                          await LocalStorage.write(bytes, 'sample.pdf').then((val) {
+                          await downloadFile(
+                            widget.pdfUrl!,
+                            '${widget.contentId}.pdf',
+                            (await getDownloadsDirectory())!.path,
+                          ).then((val) {
                             final snackBar = SnackBar(
                               content: Text(
                                 'File saved sucessfully!',
                                 style: TextStyle(color: AppColors.secondary),
                               ),
-                              backgroundColor: AppColors.primary.withOpacity(0.9),
+                              backgroundColor: AppColors.primary.withAlpha(230),
                               behavior: SnackBarBehavior.floating,
                             );
                             if (context.mounted) {

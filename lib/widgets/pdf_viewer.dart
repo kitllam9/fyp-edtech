@@ -2,6 +2,7 @@ import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fyp_edtech/model/badge.dart';
+import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:fyp_edtech/pages/completed_page.dart';
 import 'package:fyp_edtech/styles/app_colors.dart';
@@ -31,13 +32,14 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   int? _total;
   PDFDocument? doc;
   final User user = GetIt.instance.get<User>();
+  String? pdfUrl;
 
   @override
   void initState() {
     context.loaderOverlay.show();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      doc = await PDFDocument.fromURL('http://${dotenv.get('API_DEV')}/api/content/get-pdf/${widget.id}');
-      // doc = await PDFDocument.fromURL('https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=1f2ee3831eebfc97bfafd514ca2abb7e2c5c86bb');
+      pdfUrl = 'http://${dotenv.get('API_DEV')}/api/content/get-pdf/${widget.id}';
+      doc = await PDFDocument.fromURL(pdfUrl!);
       _total = doc?.count;
       setState(() {});
       if (mounted) context.loaderOverlay.hide();
@@ -89,6 +91,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => CompletedPage(
+                            pdfUrl: pdfUrl,
                             contentId: widget.id,
                             type: CompletedType.notes,
                             targets: List<int>.from(map!['targets']),
@@ -124,7 +127,23 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
                   'Bookmark',
                   style: TextStyle(color: AppColors.secondary),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () async {
+                  await Content.bookmark(widget.id).then((message) {
+                    if (message != null) {
+                      final snackBar = SnackBar(
+                        content: Text(
+                          message,
+                          style: TextStyle(color: AppColors.secondary),
+                        ),
+                        backgroundColor: AppColors.primary.withOpacity(0.9),
+                        behavior: SnackBarBehavior.fixed,
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    }
+                  });
+                },
               ),
             ],
           ),

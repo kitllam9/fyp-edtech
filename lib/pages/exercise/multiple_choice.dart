@@ -74,6 +74,7 @@ class _MultipleChoiceState extends State<MultipleChoice> {
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   c.key,
@@ -82,9 +83,11 @@ class _MultipleChoiceState extends State<MultipleChoice> {
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Text(
-                                  c.value,
-                                  style: TextStyle(color: selected![index] ? AppColors.secondary : AppColors.primary),
+                                Expanded(
+                                  child: Text(
+                                    c.value,
+                                    style: TextStyle(color: selected![index] ? AppColors.secondary : AppColors.primary),
+                                  ),
                                 )
                               ],
                             ),

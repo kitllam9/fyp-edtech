@@ -83,4 +83,12 @@ class Content {
     var res = await Api().get(path: '/content/complete/$id');
     return res?.success ?? false;
   }
+
+  static Future<String?> bookmark(int id) async {
+    var res = await Api().get(path: '/content/bookmark/$id');
+    if (res?.success ?? false) {
+      return res!.message;
+    }
+    return null;
+  }
 }

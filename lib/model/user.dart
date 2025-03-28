@@ -1,3 +1,5 @@
+import 'package:fyp_edtech/model/content.dart';
+import 'package:fyp_edtech/model/paginated_data.dart';
 import 'package:fyp_edtech/service/api.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +62,24 @@ class User {
     );
     if (res?.success ?? false) {
       return res!.data!;
+    }
+    return null;
+  }
+
+  Future<PaginatedData<Content>?> getBookmarks({
+    required int page,
+  }) async {
+    var res = await Api().get(
+      path: '/content/get-bookmark',
+      queries: {
+        'page': page.toString(),
+      },
+    );
+    if (res?.success ?? false) {
+      return PaginatedData<Content>.fromJson(
+        res!.data!,
+        (item) => Content.fromJson(item),
+      );
     }
     return null;
   }

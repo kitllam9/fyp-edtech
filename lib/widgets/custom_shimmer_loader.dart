@@ -23,6 +23,7 @@ class CustomShimmmerLoader extends StatelessWidget {
       children: [
         for (int i = 0; i < (row ?? 3); i++)
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               for (int j = 0; j < (col ?? 2); j++) ...[
                 customLayoutBuilder != null
@@ -30,7 +31,7 @@ class CustomShimmmerLoader extends StatelessWidget {
                     : Box(
                         margin: EdgeInsets.all(5),
                         child: SizedBox(
-                          width: Globals.screenWidth! * 0.42,
+                          width: Globals.screenWidth! * 0.4,
                           height: 250,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

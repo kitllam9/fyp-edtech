@@ -83,7 +83,7 @@ class _AchievementPageState extends State<AchievementPage> {
                         baseColor: AppColors.shimmerBase,
                         highlightColor: AppColors.shimmerHighlight,
                         child: SizedBox(
-                          width: Globals.screenWidth! * 0.65,
+                          width: Globals.screenWidth! * 0.6,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,

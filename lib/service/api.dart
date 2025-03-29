@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io';
 import 'package:fyp_edtech/model/user.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +21,7 @@ class Api {
   final String pathPrefix;
 
   User user = GetIt.instance.get<User>();
-  String host = dotenv.env['API_DEV']!;
+  String host = Platform.isIOS ? 'localhost:8000' : '10.0.2.2:8000';
 
   Future<ApiResponse>? get({
     required String path,

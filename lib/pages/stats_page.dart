@@ -168,7 +168,7 @@ class _StatsPageState extends State<StatsPage> {
                                     baseColor: AppColors.shimmerBase,
                                     highlightColor: AppColors.shimmerHighlight,
                                     child: SizedBox(
-                                      width: Globals.screenWidth! * 0.53,
+                                      width: Globals.screenWidth! * 0.48,
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -314,7 +314,9 @@ class _StatsPageState extends State<StatsPage> {
                                               targets: List<int>.from(map!['targets']),
                                               currentPoints: map['current_points'],
                                               targetPoints: map['target_points'],
-                                              earnedBadges: [for (var json in map['earned_badges']) MyBadge.fromJson(json)],
+                                              earnedBadges: [
+                                                for (var json in map['earned_badges']) MyBadge.fromJson(json)
+                                              ],
                                             ),
                                           ),
                                         );
@@ -336,7 +338,8 @@ class _StatsPageState extends State<StatsPage> {
                                               Text(
                                                 quest.name,
                                                 style: TextStyle(
-                                                  color: AppColors.primary.withAlpha((quest.claimed ?? false) ? 100 : 255),
+                                                  color:
+                                                      AppColors.primary.withAlpha((quest.claimed ?? false) ? 100 : 255),
                                                   fontSize: 20,
                                                 ),
                                               ),
@@ -354,13 +357,16 @@ class _StatsPageState extends State<StatsPage> {
                                                 height: 10,
                                               ),
                                               SimpleAnimationProgressBar(
-                                                ratio: (quest.progress / quest.target) >= 1 ? 1 : (quest.progress / quest.target),
+                                                ratio: (quest.progress / quest.target) >= 1
+                                                    ? 1
+                                                    : (quest.progress / quest.target),
                                                 width: Globals.screenWidth! * 0.85,
                                                 height: 8,
                                                 borderRadius: BorderRadius.circular(8),
                                                 direction: Axis.horizontal,
                                                 backgroundColor: AppColors.unselected.withAlpha(100),
-                                                foregrondColor: AppColors.primary.withAlpha((quest.claimed ?? false) ? 10 : 255),
+                                                foregrondColor:
+                                                    AppColors.primary.withAlpha((quest.claimed ?? false) ? 10 : 255),
                                                 duration: Duration.zero,
                                                 curve: Curves.easeInOutCubic,
                                               ),

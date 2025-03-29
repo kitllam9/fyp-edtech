@@ -6,6 +6,7 @@ import 'package:fyp_edtech/widgets/buttons.dart';
 import 'package:get_it/get_it.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -43,10 +44,10 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       'Help': {
         'icon': Symbols.help,
-        'onPressed': () {
-          Navigator.of(context).pushNamed(
-            '/bookmark',
-          );
+        'onPressed': () async {
+          if (!await launchUrl(Uri.parse('https://github.com/kitllam9/fyp-edtech'))) {
+            throw Exception('Could not launch');
+          }
         }
       },
       'Logout': {

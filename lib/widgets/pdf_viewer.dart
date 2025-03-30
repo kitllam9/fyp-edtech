@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fyp_edtech/model/badge.dart';
 import 'package:fyp_edtech/model/content.dart';
 import 'package:fyp_edtech/model/user.dart';
@@ -38,7 +39,7 @@ class _CustomPDFViewerState extends State<CustomPDFViewer> {
   void initState() {
     context.loaderOverlay.show();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      pdfUrl = 'http://${dotenv.get('API_DEV')}/api/content/get-pdf/${widget.id}';
+      pdfUrl = 'http://${Platform.isIOS ? 'localhost:8000' : '10.0.2.2:8000'}/api/content/get-pdf/${widget.id}';
       doc = await PDFDocument.fromURL(pdfUrl!);
       _total = doc?.count;
       setState(() {});

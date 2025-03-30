@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fyp_edtech/config/routes.dart';
 import 'package:fyp_edtech/model/user.dart';
@@ -18,7 +17,6 @@ final GetIt getIt = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
 
   getIt.registerSingleton<User>(User());
   getIt.registerSingleton<SharedPreferences>(await LocalStorage.prefs);

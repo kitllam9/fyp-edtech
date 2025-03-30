@@ -9,4 +9,4 @@
 
 4. Start an emulator and make sure it is connected.
 
-5. Start the web application of the project (See https://github.com/kitllam9/fyp-edtech-web) and run this Flutter project with `flutter run` or the IDE's GUI.
+5. Start the web application of the project (See https://github.com/kitllam9/fyp-edtech-web) and run this Flutter project with `flutter run` or run the `main.dart` through an IDE's GUI.

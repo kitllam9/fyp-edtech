@@ -13,10 +13,10 @@
 
 # Screenshots
 
-![Main pages](https://imgur.com/6FC4hCA.png)
+![Main pages](https://imgur.com/6FC4hCA.png)</br>
 
-![Profile and Preferences](https://imgur.com/QAie1He.png)
+![Profile and Preferences](https://imgur.com/QAie1He.png)</br>
 
-![PDF reader, Exercise, and Complete screen](https://imgur.com/PmdsqA4.png)
+![PDF reader, Exercise, and Complete screen](https://imgur.com/PmdsqA4.png)</br>
 
-![Authentication and Bookmarks](https://imgur.com/dDUzgZc.png)
+![Authentication and Bookmarks](https://imgur.com/dDUzgZc.png)</br>
